@@ -1,4 +1,9 @@
-from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import (  # isort:skip
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
+
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils import timezone
@@ -66,7 +71,7 @@ class MyUserManager(BaseUserManager):
         return user
 
 
-class CustomUser(AbstractBaseUser):
+class CustomUser(AbstractBaseUser, PermissionsMixin):
     status = models.ForeignKey(
         Status,
         default="1",
