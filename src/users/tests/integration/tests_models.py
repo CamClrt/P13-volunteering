@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from users.models import CustomUser, Status
+from users.models import CustomUser, Sector, Status
 
 
 class StatusModelTests(TestCase):
@@ -12,6 +12,17 @@ class StatusModelTests(TestCase):
 
     def test_auto_slug(self):
         self.assertEqual(self.status.slug, "fake-status")
+
+
+class SectorModelTests(TestCase):
+    def setUp(self):
+        self.status = Sector.objects.create(name="Fake sector")
+
+    def test_status_str(self):
+        self.assertEqual(self.status.__str__(), "Fake sector")
+
+    def test_auto_slug(self):
+        self.assertEqual(self.status.slug, "fake-sector")
 
 
 class CustomUserModelTests(TestCase):

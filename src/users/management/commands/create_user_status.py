@@ -14,9 +14,9 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         logging.info("data insertion in DB: starting")
         try:
-            Status.objects.create(name="Bénévole")
-            Status.objects.create(name="Association")
+            for status in ["Bénévole", "Association"]:
+                Status.objects.create(name=status)
         except IntegrityError:
-            logging.warning("data already existed")
-        logging.info("data insertion in DB: finished")
+            logging.warning("status data already existed")
+        logging.info("status data insertion in DB: finished")
         return
