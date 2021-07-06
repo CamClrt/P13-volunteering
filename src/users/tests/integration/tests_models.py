@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from users.models import CustomUser, Sector, Status
+from users.models import Address, City, CustomUser, Sector, Status
 
 
 class StatusModelTests(TestCase):
@@ -16,13 +16,35 @@ class StatusModelTests(TestCase):
 
 class SectorModelTests(TestCase):
     def setUp(self):
-        self.status = Sector.objects.create(name="Fake sector")
+        self.sector = Sector.objects.create(name="Fake sector")
 
-    def test_status_str(self):
-        self.assertEqual(self.status.__str__(), "Fake sector")
+    def test_sector_str(self):
+        self.assertEqual(self.sector.__str__(), "Fake sector")
 
     def test_auto_slug(self):
-        self.assertEqual(self.status.slug, "fake-sector")
+        self.assertEqual(self.sector.slug, "fake-sector")
+
+
+class CityModelTests(TestCase):
+    def setUp(self):
+        self.city = City.objects.create(name="Zion", zip_code="99999")
+
+    def test_city_str(self):
+        self.assertEqual(self.city.__str__(), "99999, ZION")
+
+
+class AddressModelTests(TestCase):
+    def setUp(self):
+        self.city = City.objects.create(name="Zion", zip_code="99999")
+        self.address = Address.objects.create(
+            description="fake description",
+            address_1="fake address 1",
+            address_2="fake address 2",
+            city=self.city,
+        )
+
+    def test_address_str(self):
+        self.assertEqual(self.address.__str__(), "fake address 1, 99999, ZION")
 
 
 class CustomUserModelTests(TestCase):
