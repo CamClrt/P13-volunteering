@@ -1,134 +1,91 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
 {% load static %}
-<html lang="fr">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <title>-La plateforme à caractère associatif-</title>
-        <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="{% static 'assets/favicon.ico' %}" />
-        <!-- Font Awesome icons (free version)-->
-        <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
-        <!-- Google fonts-->
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
-        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    </head>
-    <body>
-        <!-- Navigation-->
-        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-            <div class="container">
-                <a class="navbar-brand" href="{% url 'home:home' %}">Home</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                    Menu
-                    <i class="fas fa-bars ms-1"></i>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                        {% if user.is_authenticated and user.status == "bénévole" %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'candidate-dashboard' %}">Dashboard</a></li>
-                        {% endif %}
-                        {% if user.is_authenticated and user.status == "Association" %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'organization-dashboard' %}">Dashboard</a></li>
-                        {% endif %}
-                        {% if user.is_authenticated %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'users:profile' %}">Profil</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{% url 'users:logout' %}">Déconnexion</a></li>
-                        {% else %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}">Connexion</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{% url 'users:register' %}">Inscription</a></li>
-                        {% endif %}
-                        <li class="nav-item"><a class="nav-link" href="mailto:camille.clarret@gmail.com" target="_blank">Contact</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <!-- Masthead-->
-        <header class="masthead">
-            <div class="container">
-                <div class="masthead-heading">La plateforme</div>
-                <div class="masthead-heading">à caractère associatif</div>
-                <div class="masthead-subheading">-Des profils IT bénévoles au service de nos associations-</div>
-                <a class="btn btn-primary btn-xl text-uppercase" href="#project">En savoir +</a>
-            </div>
-        </header>
+{% block home %}
 
-        <!-- empty-->
-        <section class="page-section" id="project">
-        </section>
+<!-- Masthead-->
+<header class="masthead">
+    <div class="container">
+        <div class="masthead-heading">La plateforme</div>
+        <div class="masthead-heading">à caractère associatif</div>
+        <div class="masthead-subheading">-Des profils IT bénévoles au service de nos associations-</div>
+        <a class="btn btn-primary btn-xl text-uppercase" href="#project">En savoir +</a>
+    </div>
+</header>
 
-        <!-- Project-->
-        <section class="page-section bg-light">
-            <div class="container">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Projet</h2>
-                    <h3 class="section-subheading text-muted">détails du projet à compléter</h3>
-                </div>
-            </div>
-        </section>
+<!-- empty-->
+<section class="page-section" id="project">
+</section>
 
-        <!-- Public-->
-        <section class="page-section">
-            <div class="container">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Vous-êtes ?</h2>
-                </div>
-                <div class="row text-center">
-                    <div class="col-md-6">
-                        <span class="fa-stack fa-6x">
-                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                            <i class="fas fa-hands-helping fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <h4 class="my-1">Une association de loi 1901</h4>
-                        <p class="text-muted">👉 Vous avez besoin de renfort ?</p>
-                        <p class="text-muted fst-italic">Créer et maintenir un site Internet, des outils métiers, développer votre sécurité informatique, mettre en place des outils collaboratifs, de newsletters, de campagnes publicitaires, monter une campagne de don en ligne, former vos adhérents à distance, et plus encore 🚀</p>
-                    </div>
-                    <div class="col-md-6">
-                        <span class="fa-stack fa-6x">
-                            <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                            <i class="fas fa-laptop fa-stack-1x fa-inverse"></i>
-                        </span>
-                        <h4 class="my-1">Un(e) passionné(e) ou professionnel(le) dans l'IT</h4>
-                        <p class="text-muted">👉 Vous avez l'une ou plusieurs de ces cordes à votre arc ?</p>
-                        <p class="text-muted fst-italic">Base de données, DevOps, Développement Front-end, Développement Back-end, Développement Full-Stack, Développement mobile, Gestion de projet, Gestion de site & réseaux sociaux, Marketing, Pédagogie & formation, Produit, SEO/SEA, Support.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="text-center pt-5">
-                <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'users:register' %}">M'inscrire 💥</a>
-            </div>
-        </section>
+<!-- Project-->
+<section class="page-section bg-light">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">Projet</h2>
+            <h3 class="section-subheading text-muted">Lorem Ipsum is simply dummy text of the printing and typesetting
+                industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown
+                printer took a galley of type and scrambled it to make a type specimen book. It has survived not only
+                five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was
+                popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more
+                recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</h3>
+        </div>
+    </div>
+</section>
 
-        <!-- Team-->
-        <section class="page-section bg-light" id="team">
-            <div class="container">
-                <div class="text-center">
-                    <h2 class="section-heading text-uppercase">Equipe</h2>
-                    <div class="team-member">
-                        <img class="mx-auto rounded-circle" src="{% static 'assets/img/team/1.png' %}" alt="..." />
-                        <h4>Camille Clarret</h4>
-                        <p class="text-muted">Développeuse Web</p>
-                        <a class="btn btn-dark btn-social mx-2" href="https://twitter.com/camille_clarret" target="_blank"><i class="fab fa-twitter"></i></a>
-                        <a class="btn btn-dark btn-social mx-2" href="https://www.linkedin.com/in/camille-clarret/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-                        <a class="btn btn-dark btn-social mx-2" href="http://camille-clarret.com" target="_blank"><i class="fas fa-window-restore"></i></a>
-                    </div>
-                </div>
+<!-- Public-->
+<section class="page-section">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">Vous-êtes ?</h2>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-6">
+                <span class="fa-stack fa-6x">
+                    <i class="fas fa-circle fa-stack-2x text-primary"></i>
+                    <i class="fas fa-hands-helping fa-stack-1x fa-inverse"></i>
+                </span>
+                <h4 class="my-1">Une association de loi 1901</h4>
+                <p class="text-muted">👉 Vous avez besoin de renfort ?</p>
+                <p class="text-muted fst-italic">Créer et maintenir un site Internet, des outils métiers, développer
+                    votre sécurité informatique, mettre en place des outils collaboratifs, de newsletters, de campagnes
+                    publicitaires, monter une campagne de don en ligne, former vos adhérents à distance, et plus encore
+                    🚀</p>
             </div>
-        </section>
-
-        <!-- Footer-->
-        <footer class="footer py-4">
-            <div class="container">
-                <div class="row align-items-center">
-                    <a class="link-dark text-decoration-none" href="{% url 'home:legal_notices' %}">・Mentions légales・</a>
-                </div>
+            <div class="col-md-6">
+                <span class="fa-stack fa-6x">
+                    <i class="fas fa-circle fa-stack-2x text-primary"></i>
+                    <i class="fas fa-laptop fa-stack-1x fa-inverse"></i>
+                </span>
+                <h4 class="my-1">Un(e) passionné(e) ou professionnel(le) dans l'IT</h4>
+                <p class="text-muted">👉 Vous avez l'une ou plusieurs de ces cordes à votre arc ?</p>
+                <p class="text-muted fst-italic">Base de données, DevOps, Développement Front-end, Développement
+                    Back-end, Développement Full-Stack, Développement mobile, Gestion de projet, Gestion de site &
+                    réseaux sociaux, Marketing, Pédagogie & formation, Produit, SEO/SEA, Support.</p>
             </div>
-        </footer>
+        </div>
+    </div>
+    <div class="text-center pt-5">
+        <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'users:register' %}">M'inscrire 💥</a>
+    </div>
+</section>
 
-        <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
-        <script src="{% static 'js/scripts.js' %}"></script>
-    </body>
-</html>
+<!-- Team-->
+<section class="page-section bg-light" id="team">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">Equipe</h2>
+            <div class="team-member">
+                <img class="mx-auto rounded-circle" src="{% static 'assets/img/team/1.png' %}" alt="..." />
+                <h4>Camille Clarret</h4>
+                <p class="text-muted">Développeuse Web</p>
+                <a class="btn btn-dark btn-social mx-2" href="https://twitter.com/camille_clarret" target="_blank"><i
+                        class="fab fa-twitter"></i></a>
+                <a class="btn btn-dark btn-social mx-2" href="https://www.linkedin.com/in/camille-clarret/"
+                    target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                <a class="btn btn-dark btn-social mx-2" href="http://camille-clarret.com" target="_blank"><i
+                        class="fas fa-window-restore"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock home %}
