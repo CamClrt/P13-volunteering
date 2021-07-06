@@ -42,6 +42,46 @@ class Sector(models.Model):
         super().save(*args, **kwargs)
 
 
+class City(models.Model):
+    name = models.CharField(
+        max_length=50,
+        unique=True,
+    )
+    zip_code = models.CharField(
+        max_length=5,
+    )
+
+    def __str__(self):
+        return f"{self.zip_code}, {self.name}"
+
+    def save(self, *args, **kwargs):
+        self.name = self.name.upper()
+        super().save(*args, **kwargs)
+
+
+class Address(models.Model):
+    city = models.ForeignKey(
+        City,
+        on_delete=models.CASCADE,
+        related_name="address",
+        related_query_name="address",
+    )
+    description = models.CharField(
+        max_length=250,
+        unique=True,
+    )
+    address_1 = models.CharField(
+        max_length=250,
+    )
+    address_2 = models.CharField(
+        max_length=250,
+        blank=True,
+    )
+
+    def __str__(self):
+        return f"{self.address_1}, {self.city}"
+
+
 class MyUserManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, status, password=None):
         """
