@@ -18,6 +18,8 @@ from dotenv import load_dotenv
 # Init dotenv
 load_dotenv()
 
+GITHUB_WORKFLOW = os.environ.get("GITHUB_WORKFLOW")
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -27,6 +29,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY")
+
+if GITHUB_WORKFLOW:
+    SECRET_KEY = "my_secret_key"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -89,6 +94,18 @@ DATABASES = {
         "PORT": os.environ.get("PORT"),
     }
 }
+
+if GITHUB_WORKFLOW:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "github_actions",
+            "USER": "postgres",
+            "PASSWORD": "postgres",
+            "HOST": "127.0.0.1",
+            "PORT": "5432",
+        }
+    }
 
 
 # Password validation
