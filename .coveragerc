@@ -1,0 +1,10 @@
+[run]
+omit =
+    omit =
+        *tox*
+        *setup*
+        *migrations*
+        *config*
+        *admin*
+        *apps*
+        *manage.py
