@@ -163,8 +163,8 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-LOGIN_URL = "login"
-LOGIN_REDIRECT_URL = "profile"
+LOGIN_URL = "/users/login"
+LOGIN_REDIRECT_URL = "/users/profile"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"

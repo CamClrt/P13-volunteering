@@ -33,11 +33,11 @@
                             <li class="nav-item"><a class="nav-link" href="{% url 'organization-dashboard' %}">Dashboard</a></li>
                         {% endif %}
                         {% if user.is_authenticated %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Profil</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Déconnexion</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'users:profile' %}">Profil</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'users:logout' %}">Déconnexion</a></li>
                         {% else %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Connexion</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Inscription</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'users:login' %}">Connexion</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'users:register' %}">Inscription</a></li>
                         {% endif %}
                         <li class="nav-item"><a class="nav-link" href="mailto:camille.clarret@gmail.com" target="_blank">Contact</a></li>
                     </ul>
@@ -96,7 +96,7 @@
                 </div>
             </div>
             <div class="text-center pt-5">
-                <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'register' %}">M'inscrire 💥</a>
+                <a class="btn btn-primary btn-xl text-uppercase" href="{% url 'users:register' %}">M'inscrire 💥</a>
             </div>
         </section>
 
