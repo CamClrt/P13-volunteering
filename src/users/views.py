@@ -7,6 +7,7 @@ from .forms import UserRegistrationForm
 def register(request):
     if request.method == "POST":
         form = UserRegistrationForm(request.POST)
+        print(form)
         if form.is_valid():
             form.save()
             return redirect("users:login")
