@@ -223,10 +223,10 @@ class OrganizationProfile(models.Model):
         max_length=500,
         blank=True,
     )
-    """logo = models.ImageField(
+    logo = models.ImageField(
         default="default.jpg",
         upload_to="organization",
-    )"""
+    )
 
 
 class CandidateProfile(models.Model):
@@ -257,10 +257,10 @@ class CandidateProfile(models.Model):
     gitlab_url = models.URLField(
         blank=True,
     )
-    """avatar = models.ImageField(
+    avatar = models.ImageField(
         default="default.jpg",
         upload_to="candidate",
-    )"""
+    )
 
 
 def post_profile_save_receiver(sender, instance, created, **kwargs):
