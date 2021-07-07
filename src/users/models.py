@@ -5,8 +5,11 @@ from django.contrib.auth.models import (  # isort:skip
 )
 
 from django.db import models
+from django.db.models.signals import post_save
 from django.template.defaultfilters import slugify
 from django.utils import timezone
+
+from config import settings
 
 
 class Status(models.Model):
@@ -173,3 +176,100 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+
+class OrganizationProfile(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    sector = models.ForeignKey(
+        Sector,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="sector",
+        related_query_name="sector",
+    )
+    location = models.ForeignKey(
+        Address,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="organization_location",
+        related_query_name="organization_location",
+    )
+    name = models.CharField(
+        max_length=50,
+        blank=True,
+    )
+    rna_code = models.CharField(
+        max_length=10,
+        blank=True,
+    )
+    siret_code = models.CharField(
+        max_length=14,
+        blank=True,
+    )
+    email = models.EmailField(
+        blank=True,
+    )
+    web_site_url = models.URLField(
+        blank=True,
+    )
+    phone_number = models.CharField(
+        max_length=10,
+        blank=True,
+    )
+    description = models.TextField(
+        max_length=500,
+        blank=True,
+    )
+    """logo = models.ImageField(
+        default="default.jpg",
+        upload_to="organization",
+    )"""
+
+
+class CandidateProfile(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    location = models.ForeignKey(
+        Address,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="candidate_location",
+        related_query_name="candidate_location",
+    )
+    description = models.TextField(
+        max_length=500,
+        blank=True,
+    )
+    web_site_url = models.URLField(
+        blank=True,
+    )
+    linkedin_url = models.URLField(
+        blank=True,
+    )
+    github_url = models.URLField(
+        blank=True,
+    )
+    gitlab_url = models.URLField(
+        blank=True,
+    )
+    """avatar = models.ImageField(
+        default="default.jpg",
+        upload_to="candidate",
+    )"""
+
+
+def post_profile_save_receiver(sender, instance, created, **kwargs):
+    """Create a profil when a new user is registered"""
+    if created:
+        if instance.status.name == "Bénévole":
+            CandidateProfile.objects.create(user=instance)
+        if instance.status.name == "Association":
+            OrganizationProfile.objects.create(user=instance)
+
+
+post_save.connect(post_profile_save_receiver, sender=settings.AUTH_USER_MODEL)

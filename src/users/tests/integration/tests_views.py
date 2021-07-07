@@ -12,7 +12,7 @@ class TestRegisterView(TestCase):
 
     def test_registration_ok(self):
         data = {
-            "status": "13",
+            "status": "15",
             "first_name": "John",
             "last_name": "Doe",
             "email": "john.doe@gmail.com",
