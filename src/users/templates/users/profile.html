@@ -2,10 +2,85 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-<h1>Profile page</h1>
-<p class="text-secondary">{{ user.email }}</p>
-<h2 class="account-heading">{{ user.first_name }}</h2>
-<h2 class="account-heading">{{ user.last_name }}</h2>
-<h2 class="account-heading">{{ user.status }}</h2>
+<h1>Bienvenue {{ user.first_name }} {{ user.last_name }} !<br></h1>
+
+<legend class="border-bottom mb-4"></legend>
+
+<div class="row text-center">
+    <div class="col-lg-6 col-md-12">
+        <h6>Compte: {{ user.status }}</h6>
+    </div>
+    <div class="col-lg-6 col-md-12">
+        <h6>Identifiant: {{ user.email }}</h6><br>
+    </div>
+</div>
+
+<form action="POST">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-lg-6 col-md-12">
+            {{ user_form.first_name|as_crispy_field }}
+        </div>
+        <div class="col-lg-6 col-md-12">
+            {{ user_form.last_name|as_crispy_field }}<br>
+        </div>
+    </div>
+
+    <!-- Organization part -->
+    {% if user.status.name == "Association" %}
+    <h6>Votre association</h6><br>
+    <div class="row">
+        <div class="col-lg-6 col-md-12">
+            {{ organization_profile_form.name|as_crispy_field }}
+        </div>
+        <div class="col-lg-6 col-md-12">
+            {{ organization_profile_form.sector|as_crispy_field }}
+        </div>
+        <div class="col-lg-12 col-md-12">
+            {{ organization_profile_form.description|as_crispy_field }}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Candidate part -->
+    {% if user.status.name == "Bénévole" %}
+    <div class="row">
+        <div class="col-lg-6 col-md-12">
+            {{ candidate_profile_form.web_site_url|as_crispy_field }}
+        </div>
+        <div class="col-lg-6 col-md-12">
+            {{ candidate_profile_form.linkedin_url|as_crispy_field }}
+        </div>
+        <div class="col-lg-6 col-md-12">
+            {{ candidate_profile_form.github_url|as_crispy_field }}
+        </div>
+        <div class="col-lg-6 col-md-12">
+            {{ candidate_profile_form.gitlab_url|as_crispy_field }}
+        </div>
+        <div class="col-lg-12 col-md-12">
+            {{ candidate_profile_form.description|as_crispy_field }}
+        </div>
+    </div>
+
+    {% endif %}
+    <div class="row">
+        <div class="col-lg-6 col-md-12">
+            {{ address_form.address_1|as_crispy_field }}
+        </div>
+        <div class="col-lg-6 col-md-12">
+            {{ address_form.address_2|as_crispy_field }}
+        </div>
+        <div class="col-lg-6 col-md-12">
+            {{ city_form.name|as_crispy_field }}
+        </div>
+        <div class="col-lg-6 col-md-12">
+            {{ city_form.zip_code|as_crispy_field }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button class="btn btn-outline-warning mt-4" type="Submit">Mettre à jour</button>
+    </div>
+</form>
 
 {% endblock content %}
