@@ -4,6 +4,7 @@ from django.contrib.auth.models import (  # isort:skip
     PermissionsMixin,
 )
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models.signals import post_save
 from django.template.defaultfilters import slugify
@@ -16,7 +17,6 @@ class Status(models.Model):
     name = models.CharField(
         max_length=50,
         unique=True,
-        verbose_name="Type d'utilisateur",
     )
     slug = models.SlugField(max_length=50, unique=True, blank=True)
 
@@ -33,8 +33,12 @@ class Sector(models.Model):
     name = models.CharField(
         max_length=50,
         unique=True,
+        blank=True,
     )
-    slug = models.SlugField(max_length=50, unique=True, blank=True)
+    slug = models.SlugField(
+        max_length=50,
+        unique=True,
+    )
 
     def __str__(self):
         return self.name
@@ -49,9 +53,11 @@ class City(models.Model):
     name = models.CharField(
         max_length=50,
         unique=True,
+        blank=True,
     )
     zip_code = models.CharField(
         max_length=5,
+        blank=True,
     )
 
     def __str__(self):
@@ -71,10 +77,11 @@ class Address(models.Model):
     )
     description = models.CharField(
         max_length=250,
-        unique=True,
+        blank=True,
     )
     address_1 = models.CharField(
         max_length=250,
+        blank=True,
     )
     address_2 = models.CharField(
         max_length=250,
@@ -264,12 +271,33 @@ class CandidateProfile(models.Model):
 
 
 def post_profile_save_receiver(sender, instance, created, **kwargs):
-    """Create a profil when a new user is registered"""
+    """Create a profil and other infos, when a new user is registered"""
     if created:
+        try:
+            city = City.objects.get(name="")
+        except ObjectDoesNotExist:
+            city = City.objects.create(name="", zip_code="")
+
+        address = Address.objects.create(
+            city=city,
+            description="",
+            address_1="",
+            address_2="",
+        )
+
         if instance.status.name == "Bénévole":
-            CandidateProfile.objects.create(user=instance)
+            CandidateProfile.objects.create(
+                user=instance,
+                location=address,
+            )
+
         if instance.status.name == "Association":
-            OrganizationProfile.objects.create(user=instance)
+            sector = Sector.objects.get(name="Autres")
+            OrganizationProfile.objects.create(
+                user=instance,
+                location=address,
+                sector=sector,
+            )
 
 
 post_save.connect(post_profile_save_receiver, sender=settings.AUTH_USER_MODEL)

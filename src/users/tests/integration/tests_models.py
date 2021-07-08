@@ -105,7 +105,7 @@ class CustomUserModelTests(TestCase):
 
 class OrganizationProfilModelTests(TestCase):
     def setUp(self):
-        self.sector = Sector.objects.create(name="Fake sector")
+        self.sector = Sector.objects.create(name="Autres")
         self.status = Status.objects.create(name="Association")
         self.user1 = CustomUser.objects.create_user(
             email="cam@mail.com",
@@ -114,16 +114,11 @@ class OrganizationProfilModelTests(TestCase):
             password="1234AZERTY$",
             status=self.status,
         )
-        self.city = City.objects.create(name="Zion", zip_code="99999")
-        self.address = Address.objects.create(
-            description="fake description",
-            address_1="fake address 1",
-            address_2="fake address 2",
-            city=self.city,
-        )
 
     def test_create_organization_profile_by_signal(self):
         self.assertEqual(OrganizationProfile.objects.count(), 1)
+        self.assertEqual(Address.objects.count(), 1)
+        self.assertEqual(City.objects.count(), 1)
 
 
 class CandidateProfilModelTests(TestCase):
@@ -136,13 +131,8 @@ class CandidateProfilModelTests(TestCase):
             password="1234AZERTY$",
             status=self.status,
         )
-        self.city = City.objects.create(name="Zion", zip_code="99999")
-        self.address = Address.objects.create(
-            description="fake description",
-            address_1="fake address 1",
-            address_2="fake address 2",
-            city=self.city,
-        )
 
     def test_create_candidate_profile_by_signal(self):
         self.assertEqual(CandidateProfile.objects.count(), 1)
+        self.assertEqual(Address.objects.count(), 1)
+        self.assertEqual(City.objects.count(), 1)
