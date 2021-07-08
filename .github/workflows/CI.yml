@@ -33,4 +33,4 @@ jobs:
           pip install pytest-django
 
       - name: Run Django tests
-        run: python -Wa src/manage.py test --noinput -v 2
+        run: python -Wa src/manage.py test home users --noinput -v 2
