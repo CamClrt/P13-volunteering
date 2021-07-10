@@ -204,7 +204,7 @@ class OrganizationProfile(models.Model):
         related_name="organization_location",
         related_query_name="organization_location",
     )
-    name = models.CharField(
+    denomination = models.CharField(
         max_length=50,
         blank=True,
     )

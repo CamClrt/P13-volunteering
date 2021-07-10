@@ -57,6 +57,7 @@ class CandidateProfileForm(forms.ModelForm):
     class Meta:
         model = CandidateProfile
         fields = [
+            "avatar",
             "web_site_url",
             "linkedin_url",
             "github_url",
@@ -64,11 +65,15 @@ class CandidateProfileForm(forms.ModelForm):
             "description",
         ]
         labels = {
+            "avatar": "",
             "web_site_url": "Site personnel",
             "linkedin_url": "Linkedin",
             "github_url": "GitHub",
             "gitlab_url": "GitLab",
             "description": "Bio",
+        }
+        widgets = {
+            "sector": forms.RadioSelect(),
         }
 
 
@@ -76,7 +81,8 @@ class OrganizationProfileForm(forms.ModelForm):
     class Meta:
         model = OrganizationProfile
         fields = [
-            "name",
+            "logo",
+            "denomination",
             "sector",
             "description",
             "rna_code",
@@ -86,7 +92,8 @@ class OrganizationProfileForm(forms.ModelForm):
             "web_site_url",
         ]
         labels = {
-            "name": "Dénomination de la structure",
+            "logo": "",
+            "denomination": "Dénomination de la structure",
             "sector": "Secteur d'activité",
             "description": "Description",
             "rna_code": "Code RNA",
