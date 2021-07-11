@@ -12,7 +12,7 @@ from users.models import (  # isort:skip
 
 class SectorModelTests(TestCase):
     def setUp(self):
-        self.sector = Sector.objects.create(name="A")
+        self.sector = Sector.objects.create(entitled="A")
 
     def test_sector_str(self):
         self.assertEqual(self.sector.__str__(), "Sector: A")
@@ -89,7 +89,7 @@ class CustomUserModelTests(TestCase):
 
 class OrganizationProfilModelTests(TestCase):
     def setUp(self):
-        self.sector = Sector.objects.create(name="A")
+        self.sector = Sector.objects.create(entitled="A")
         self.user1 = CustomUser.objects.create_user(
             email="john.doe@mail.com",
             first_name="John",

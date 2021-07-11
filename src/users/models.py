@@ -7,6 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models.signals import post_save
 from django.utils import timezone
+from PIL import Image
 
 from config import settings
 
@@ -21,7 +22,7 @@ class Sector(models.Model):
         ("A", "Autres"),
     ]
 
-    name = models.CharField(
+    entitled = models.CharField(
         max_length=(5),
         unique=True,
         blank=True,
@@ -29,7 +30,7 @@ class Sector(models.Model):
     )
 
     def __str__(self):
-        return f"Sector: {self.name}"
+        return f"Sector: {self.entitled}"
 
 
 class City(models.Model):
@@ -175,6 +176,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         # Simplest possible answer: All admins are staff
         return self.is_admin
 
+    def save(self, *args, **kwargs):
+        self.first_name = self.first_name.capitalize()
+        self.last_name = self.last_name.upper()
+        super().save(*args, **kwargs)
+
 
 class OrganizationProfile(models.Model):
     user = models.OneToOneField(
@@ -226,6 +232,16 @@ class OrganizationProfile(models.Model):
         upload_to="organization",
     )
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        img = Image.open(self.logo.path)
+
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.logo.path)
+
 
 class CandidateProfile(models.Model):
     user = models.OneToOneField(
@@ -260,6 +276,16 @@ class CandidateProfile(models.Model):
         upload_to="candidate",
     )
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        img = Image.open(self.avatar.path)
+
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.avatar.path)
+
 
 def post_profile_save_receiver(sender, instance, created, **kwargs):
     """Create a profil and other infos, when user is registered"""
@@ -285,17 +311,17 @@ def post_profile_save_receiver(sender, instance, created, **kwargs):
         if instance.status == "ASSOCIATION":
             sector = Sector.objects.all()
             if not sector:
-                sector = Sector.objects.create(name="A")
-                sector = Sector.objects.create(name="ASH")
-                sector = Sector.objects.create(name="CL")
-                sector = Sector.objects.create(name="DD")
-                sector = Sector.objects.create(name="EFI")
-                sector = Sector.objects.create(name="S")
+                sector = Sector.objects.create(entitled="A")
+                sector = Sector.objects.create(entitled="ASH")
+                sector = Sector.objects.create(entitled="CL")
+                sector = Sector.objects.create(entitled="DD")
+                sector = Sector.objects.create(entitled="EFI")
+                sector = Sector.objects.create(entitled="S")
 
             OrganizationProfile.objects.create(
                 user=instance,
                 location=address,
-                sector=Sector.objects.get(name="A"),
+                sector=Sector.objects.get(entitled="A"),
             )
 
 

@@ -137,10 +137,10 @@ class SectorForm(forms.ModelForm):
     class Meta:
         model = Sector
         fields = [
-            "name",
+            "entitled",
         ]
         labels = {
-            "name": "Domaine d'activité",
+            "entitled": "Domaine d'activité",
         }
 
 
@@ -168,3 +168,9 @@ class CityForm(forms.ModelForm):
             "name": "Ville",
             "zip_code": "Code postale",
         }
+
+    """def save(self, commit=True, instance=):
+        City.objects.
+        #rest of your logic
+        return user_author
+"""
