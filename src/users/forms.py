@@ -13,11 +13,6 @@ from .models import (  # isort:skip
 class UserRegistrationForm(UserCreationForm):
     class Meta:
 
-        STATUS = [
-            ("1", "Un bénévole"),
-            ("2", "Une association"),
-        ]
-
         model = CustomUser
         fields = [
             "status",
@@ -34,9 +29,6 @@ class UserRegistrationForm(UserCreationForm):
             "last_name": "Nom",
             "password1": "Mot de passe",
             "password2": "Confirmation du mot de passe",
-        }
-        widgets = {
-            "status": forms.RadioSelect(choices=STATUS),
         }
 
 

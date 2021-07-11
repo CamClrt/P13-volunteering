@@ -9,11 +9,10 @@
         <div class="media-body">
             <h2 class="account-heading">{{ user.first_name }} {{ user.last_name }}</h2>
             <h6>Identifiant: {{ user.email }}</h6>
-            <p class="text-secondary">Compte: {{ user.status }}</p><br>
         </div>
         <div class="media">
             <!-- Organization part -->
-            {% if user.status.slug == "association" %}
+            {% if user.status == "ASSOCIATION" %}
             <img class="mx-auto rounded-circle" src="{{ user.organizationprofile.logo.url }}" alt="logo">
             <div class="row text-center mb-5">
                 <div class="col-lg-12 col-md-12">
@@ -22,7 +21,7 @@
             </div>
             {% endif %}
             <!-- Candidate part -->
-            {% if user.status.slug == "benevole" %}
+            {% if user.status == "BENEVOLE" %}
             <img class="rounded-circle account-img mb-4" src="{{ user.candidateprofile.avatar.url }}" alt="avatar">
             <div class="row text-center mb-5">
                 <div class="col-lg-12 col-md-12">
@@ -46,7 +45,7 @@
     </div>
 
     <!-- Organization part -->
-    {% if user.status.slug == "association" %}
+    {% if user.status == "ASSOCIATION" %}
     <h6>Votre association</h6><br>
     <div class="row">
         <div class="col-lg-6 col-md-12">
@@ -77,7 +76,7 @@
     {% endif %}
 
     <!-- Candidate part -->
-    {% if user.status.slug == "benevole" %}
+    {% if user.status == "BENEVOLE" %}
     <div class="row">
         <div class="col-lg-6 col-md-12">
             {{ candidate_profile_form.web_site_url|as_crispy_field }}
