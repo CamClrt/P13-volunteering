@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.forms import Textarea
 
 from .models import (  # isort:skip
     Address,
@@ -7,6 +8,7 @@ from .models import (  # isort:skip
     City,
     CustomUser,
     OrganizationProfile,
+    Sector,
 )
 
 
@@ -65,7 +67,30 @@ class CandidateProfileForm(forms.ModelForm):
             "description": "Bio",
         }
         widgets = {
-            "sector": forms.RadioSelect(),
+            "web_site_url": Textarea(
+                attrs={
+                    "placeholder": "http(s)://www.votre-site.com",
+                    "rows": "1",
+                }
+            ),
+            "linkedin_url": Textarea(
+                attrs={
+                    "placeholder": "http(s)://www.votre-linkedin.com",
+                    "rows": "1",
+                }
+            ),
+            "github_url": Textarea(
+                attrs={
+                    "placeholder": "http(s)://www.votre-github.com",
+                    "rows": "1",
+                }
+            ),
+            "gitlab_url": Textarea(
+                attrs={
+                    "placeholder": "http(s)://www.votre-gitlab.com",
+                    "rows": "1",
+                }
+            ),
         }
 
 
@@ -75,7 +100,6 @@ class OrganizationProfileForm(forms.ModelForm):
         fields = [
             "logo",
             "denomination",
-            "sector",
             "description",
             "rna_code",
             "siret_code",
@@ -86,7 +110,6 @@ class OrganizationProfileForm(forms.ModelForm):
         labels = {
             "logo": "",
             "denomination": "Dénomination de la structure",
-            "sector": "Secteur d'activité",
             "description": "Description",
             "rna_code": "Code RNA",
             "siret_code": "SIRET",
@@ -95,7 +118,29 @@ class OrganizationProfileForm(forms.ModelForm):
             "web_site_url": "Site Web",
         }
         widgets = {
-            "sector": forms.RadioSelect(),
+            "web_site_url": Textarea(
+                attrs={
+                    "placeholder": "http(s)://www.votre-site.com",
+                    "rows": "1",
+                }
+            ),
+            "rna_code": Textarea(
+                attrs={
+                    "placeholder": "W123456789",
+                    "rows": "1",
+                }
+            ),
+        }
+
+
+class SectorForm(forms.ModelForm):
+    class Meta:
+        model = Sector
+        fields = [
+            "name",
+        ]
+        labels = {
+            "name": "Domaine d'activité",
         }
 
 

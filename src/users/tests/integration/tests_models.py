@@ -12,13 +12,10 @@ from users.models import (  # isort:skip
 
 class SectorModelTests(TestCase):
     def setUp(self):
-        self.sector = Sector.objects.create(name="Fake sector")
+        self.sector = Sector.objects.create(name="A")
 
     def test_sector_str(self):
-        self.assertEqual(self.sector.__str__(), "Fake sector")
-
-    def test_auto_slug(self):
-        self.assertEqual(self.sector.slug, "fake-sector")
+        self.assertEqual(self.sector.__str__(), "Sector: A")
 
 
 class CityModelTests(TestCase):
@@ -92,7 +89,7 @@ class CustomUserModelTests(TestCase):
 
 class OrganizationProfilModelTests(TestCase):
     def setUp(self):
-        self.sector = Sector.objects.create(name="Autres")
+        self.sector = Sector.objects.create(name="A")
         self.user1 = CustomUser.objects.create_user(
             email="john.doe@mail.com",
             first_name="John",
