@@ -3,9 +3,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.forms import Textarea
 
 from .models import (  # isort:skip
-    Address,
+    Location,
     CandidateProfile,
-    City,
     CustomUser,
     OrganizationProfile,
     Sector,
@@ -133,6 +132,23 @@ class OrganizationProfileForm(forms.ModelForm):
         }
 
 
+class LocationForm(forms.ModelForm):
+    class Meta:
+        model = Location
+        fields = [
+            "address_1",
+            "address_2",
+            "city",
+            "zip_code",
+        ]
+        labels = {
+            "address_1": "Adresse",
+            "address_2": "Complément d'adresse",
+            "city": "Ville",
+            "zip_code": "Code Postal",
+        }
+
+
 class SectorForm(forms.ModelForm):
     class Meta:
         model = Sector
@@ -142,35 +158,3 @@ class SectorForm(forms.ModelForm):
         labels = {
             "entitled": "Domaine d'activité",
         }
-
-
-class AddressForm(forms.ModelForm):
-    class Meta:
-        model = Address
-        fields = [
-            "address_1",
-            "address_2",
-        ]
-        labels = {
-            "address_1": "Adresse",
-            "address_2": "Complément d'adresse",
-        }
-
-
-class CityForm(forms.ModelForm):
-    class Meta:
-        model = City
-        fields = [
-            "name",
-            "zip_code",
-        ]
-        labels = {
-            "name": "Ville",
-            "zip_code": "Code postale",
-        }
-
-    """def save(self, commit=True, instance=):
-        City.objects.
-        #rest of your logic
-        return user_author
-"""

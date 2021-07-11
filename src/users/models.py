@@ -3,7 +3,6 @@ from django.contrib.auth.models import (  # isort:skip
     BaseUserManager,
     PermissionsMixin,
 )
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models.signals import post_save
 from django.utils import timezone
@@ -29,40 +28,8 @@ class Sector(models.Model):
         choices=SECTOR_CHOICES,
     )
 
-    def __str__(self):
-        return f"Sector: {self.entitled}"
 
-
-class City(models.Model):
-    name = models.CharField(
-        max_length=50,
-        unique=True,
-        blank=True,
-    )
-    zip_code = models.CharField(
-        max_length=5,
-        blank=True,
-    )
-
-    def __str__(self):
-        return f"{self.zip_code}, {self.name}"
-
-    def save(self, *args, **kwargs):
-        self.name = self.name.upper()
-        super().save(*args, **kwargs)
-
-
-class Address(models.Model):
-    city = models.ForeignKey(
-        City,
-        on_delete=models.CASCADE,
-        related_name="address",
-        related_query_name="address",
-    )
-    description = models.CharField(
-        max_length=250,
-        blank=True,
-    )
+class Location(models.Model):
     address_1 = models.CharField(
         max_length=250,
         blank=True,
@@ -72,8 +39,18 @@ class Address(models.Model):
         blank=True,
     )
 
-    def __str__(self):
-        return f"{self.address_1}, {self.city}"
+    city = models.CharField(
+        max_length=50,
+        blank=True,
+    )
+    zip_code = models.CharField(
+        max_length=5,
+        blank=True,
+    )
+
+    def save(self, *args, **kwargs):
+        self.city = self.city.upper()
+        super().save(*args, **kwargs)
 
 
 class MyUserManager(BaseUserManager):
@@ -157,9 +134,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         "status",
     ]
 
-    def __str__(self):
-        return f"CustomUser: {self.email}"
-
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
         # Simplest possible answer: Yes, always
@@ -195,7 +169,7 @@ class OrganizationProfile(models.Model):
         related_query_name="sector",
     )
     location = models.ForeignKey(
-        Address,
+        Location,
         on_delete=models.SET_NULL,
         null=True,
         related_name="organization_location",
@@ -249,7 +223,7 @@ class CandidateProfile(models.Model):
         on_delete=models.CASCADE,
     )
     location = models.ForeignKey(
-        Address,
+        Location,
         on_delete=models.SET_NULL,
         null=True,
         related_name="candidate_location",
@@ -290,22 +264,17 @@ class CandidateProfile(models.Model):
 def post_profile_save_receiver(sender, instance, created, **kwargs):
     """Create a profil and other infos, when user is registered"""
     if created:
-        try:
-            city = City.objects.get(name="")
-        except ObjectDoesNotExist:
-            city = City.objects.create(name="", zip_code="")
-
-        address = Address.objects.create(
-            city=city,
-            description="",
+        location = Location.objects.create(
             address_1="",
             address_2="",
+            city="",
+            zip_code="",
         )
 
         if instance.status == "BENEVOLE":
             CandidateProfile.objects.create(
                 user=instance,
-                location=address,
+                location=location,
             )
 
         if instance.status == "ASSOCIATION":
@@ -320,7 +289,7 @@ def post_profile_save_receiver(sender, instance, created, **kwargs):
 
             OrganizationProfile.objects.create(
                 user=instance,
-                location=address,
+                location=location,
                 sector=Sector.objects.get(entitled="A"),
             )
 
