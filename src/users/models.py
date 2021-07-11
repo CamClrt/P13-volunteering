@@ -13,22 +13,6 @@ from django.utils import timezone
 from config import settings
 
 
-class Status(models.Model):
-    name = models.CharField(
-        max_length=50,
-        unique=True,
-    )
-    slug = models.SlugField(max_length=50, unique=True, blank=True)
-
-    def __str__(self):
-        return self.name
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
-
-
 class Sector(models.Model):
     name = models.CharField(
         max_length=50,
@@ -137,13 +121,13 @@ class MyUserManager(BaseUserManager):
         return user
 
 
+STATUS_CHOICES = [
+    ("BENEVOLE", "Un bénévole"),
+    ("ASSOCIATION", "Une association"),
+]
+
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    status = models.ForeignKey(
-        Status,
-        default="1",
-        on_delete=models.SET_NULL,
-        null=True,
-    )
     email = models.EmailField(
         verbose_name="email address",
         unique=True,
@@ -154,19 +138,27 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=50, blank=False)
     date_joined = models.DateTimeField(default=timezone.now)
 
+    status = models.CharField(
+        max_length=25,
+        choices=STATUS_CHOICES,
+        blank=False,
+    )
+
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
     objects = MyUserManager()
 
     USERNAME_FIELD = "email"
+
     REQUIRED_FIELDS = [
         "first_name",
         "last_name",
+        "status",
     ]
 
     def __str__(self):
-        return self.email
+        return f"CustomUser: {self.email}"
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
@@ -285,13 +277,13 @@ def post_profile_save_receiver(sender, instance, created, **kwargs):
             address_2="",
         )
 
-        if instance.status.name == "Bénévole":
+        if instance.status == "BENEVOLE":
             CandidateProfile.objects.create(
                 user=instance,
                 location=address,
             )
 
-        if instance.status.name == "Association":
+        if instance.status == "ASSOCIATION":
             sector = Sector.objects.get(name="Autres")
             OrganizationProfile.objects.create(
                 user=instance,

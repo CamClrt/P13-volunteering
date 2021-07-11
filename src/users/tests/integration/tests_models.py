@@ -7,19 +7,7 @@ from users.models import (  # isort:skip
     CustomUser,
     OrganizationProfile,
     Sector,
-    Status,
 )
-
-
-class StatusModelTests(TestCase):
-    def setUp(self):
-        self.status = Status.objects.create(name="Fake status")
-
-    def test_status_str(self):
-        self.assertEqual(self.status.__str__(), "Fake status")
-
-    def test_auto_slug(self):
-        self.assertEqual(self.status.slug, "fake-status")
 
 
 class SectorModelTests(TestCase):
@@ -57,17 +45,16 @@ class AddressModelTests(TestCase):
 
 class CustomUserModelTests(TestCase):
     def setUp(self):
-        self.status = Status.objects.create(name="Fake status")
         self.user = CustomUser.objects.create_user(
-            email="cam@mail.com",
-            first_name="Cam",
-            last_name="Clrt",
+            email="john.doe@mail.com",
+            first_name="John",
+            last_name="Doe",
             password="1234AZERTY$",
-            status=self.status,
+            status="BENEVOLE",
         )
 
     def test_custom_user_str(self):
-        self.assertEqual(self.user.__str__(), "cam@mail.com")
+        self.assertEqual(self.user.__str__(), "CustomUser: john.doe@mail.com")
 
     def test_has_perm(self):
         self.assertEqual(self.user.has_perm("fake permission"), True)
@@ -89,16 +76,16 @@ class CustomUserModelTests(TestCase):
                 first_name="Other",
                 last_name="User",
                 password="1234AZERTY$",
-                status=self.status,
+                status="BENEVOLE",
             )
 
     def test_superuser_is_admin_str(self):
         superuser = CustomUser.objects.create_superuser(
-            first_name="Cam",
-            last_name="Clrt",
+            first_name="Other",
+            last_name="User",
             email="admin@gmail.com",
             password="1234AZERTY$",
-            status=self.status,
+            status="BENEVOLE",
         )
         self.assertIs(superuser.is_admin, True)
 
@@ -106,13 +93,12 @@ class CustomUserModelTests(TestCase):
 class OrganizationProfilModelTests(TestCase):
     def setUp(self):
         self.sector = Sector.objects.create(name="Autres")
-        self.status = Status.objects.create(name="Association")
         self.user1 = CustomUser.objects.create_user(
-            email="cam@mail.com",
-            first_name="Cam",
-            last_name="Clrt",
+            email="john.doe@mail.com",
+            first_name="John",
+            last_name="Doe",
             password="1234AZERTY$",
-            status=self.status,
+            status="ASSOCIATION",
         )
 
     def test_create_organization_profile_by_signal(self):
@@ -123,13 +109,12 @@ class OrganizationProfilModelTests(TestCase):
 
 class CandidateProfilModelTests(TestCase):
     def setUp(self):
-        self.status = Status.objects.create(name="Bénévole")
         self.user1 = CustomUser.objects.create_user(
-            email="cam@mail.com",
-            first_name="Cam",
-            last_name="Clrt",
+            email="john.doe@mail.com",
+            first_name="John",
+            last_name="Doe",
             password="1234AZERTY$",
-            status=self.status,
+            status="BENEVOLE",
         )
 
     def test_create_candidate_profile_by_signal(self):
