@@ -3,34 +3,33 @@ from django.contrib.auth.models import (  # isort:skip
     BaseUserManager,
     PermissionsMixin,
 )
-
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models.signals import post_save
-from django.template.defaultfilters import slugify
 from django.utils import timezone
 
 from config import settings
 
 
 class Sector(models.Model):
+    SECTOR_CHOICES = [
+        ("ASH", "Action sociale, Santé, Humanitaire"),
+        ("CL", "Culture et loisirs"),
+        ("DD", "Défense des droits"),
+        ("EFI", "Education, Formation, Insertion"),
+        ("S", "Sports"),
+        ("A", "Autres"),
+    ]
+
     name = models.CharField(
-        max_length=50,
+        max_length=(5),
         unique=True,
         blank=True,
-    )
-    slug = models.SlugField(
-        max_length=50,
-        unique=True,
+        choices=SECTOR_CHOICES,
     )
 
     def __str__(self):
-        return self.name
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
+        return f"Sector: {self.name}"
 
 
 class City(models.Model):
@@ -121,13 +120,8 @@ class MyUserManager(BaseUserManager):
         return user
 
 
-STATUS_CHOICES = [
-    ("BENEVOLE", "Un bénévole"),
-    ("ASSOCIATION", "Une association"),
-]
-
-
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+
     email = models.EmailField(
         verbose_name="email address",
         unique=True,
@@ -137,6 +131,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=50, blank=False)
     last_name = models.CharField(max_length=50, blank=False)
     date_joined = models.DateTimeField(default=timezone.now)
+
+    STATUS_CHOICES = [
+        ("BENEVOLE", "Un bénévole"),
+        ("ASSOCIATION", "Une association"),
+    ]
 
     status = models.CharField(
         max_length=25,
@@ -263,7 +262,7 @@ class CandidateProfile(models.Model):
 
 
 def post_profile_save_receiver(sender, instance, created, **kwargs):
-    """Create a profil and other infos, when a new user is registered"""
+    """Create a profil and other infos, when user is registered"""
     if created:
         try:
             city = City.objects.get(name="")
@@ -284,11 +283,19 @@ def post_profile_save_receiver(sender, instance, created, **kwargs):
             )
 
         if instance.status == "ASSOCIATION":
-            sector = Sector.objects.get(name="Autres")
+            sector = Sector.objects.all()
+            if not sector:
+                sector = Sector.objects.create(name="A")
+                sector = Sector.objects.create(name="ASH")
+                sector = Sector.objects.create(name="CL")
+                sector = Sector.objects.create(name="DD")
+                sector = Sector.objects.create(name="EFI")
+                sector = Sector.objects.create(name="S")
+
             OrganizationProfile.objects.create(
                 user=instance,
                 location=address,
-                sector=sector,
+                sector=Sector.objects.get(name="A"),
             )
 
 

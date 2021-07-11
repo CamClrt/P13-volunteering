@@ -19,6 +19,7 @@ from .forms import (  # isort:skip
     OrganizationProfileForm,
     UserForm,
     UserRegistrationForm,
+    SectorForm,
 )
 
 
@@ -135,6 +136,7 @@ def profile(request):
 
         try:
             organization = OrganizationProfile.objects.get(user=user)
+            sector = Sector.objects.get(id=organization.sector.id)
             address = Address.objects.get(id=organization.location.id)
             city = City.objects.get(id=address.city.id)
 
@@ -145,6 +147,7 @@ def profile(request):
                     ),
                     "city_form": CityForm(instance=city),
                     "address_form": AddressForm(instance=address),
+                    "sector_form": SectorForm(instance=sector),
                 }
         except ObjectDoesNotExist:
             pass
