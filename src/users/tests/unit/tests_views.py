@@ -5,7 +5,7 @@ from django.urls import reverse
 class TestRegisterView(TestCase):
     def setUp(self):
         self.client = Client()
-        self.response = self.client.get(reverse("register"))
+        self.response = self.client.get(reverse("users:register"))
 
     def test_display_register_page(self):
         self.assertEqual(self.response.status_code, 200)

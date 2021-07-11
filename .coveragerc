@@ -8,3 +8,4 @@ omit =
         *admin*
         *apps*
         *manage.py
+        *__init__*

@@ -2,12 +2,11 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 
-from .models import CandidateProfile, OrganizationProfile
+from .models import CandidateProfile, OrganizationProfile, Sector
 
 from .forms import (  # isort:skip
-    AddressForm,
+    LocationForm,
     CandidateProfileForm,
-    CityForm,
     OrganizationProfileForm,
     UserForm,
     UserRegistrationForm,
@@ -16,6 +15,7 @@ from .forms import (  # isort:skip
 
 
 def register(request):
+    """Register user"""
     if request.method == "POST":
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
@@ -29,46 +29,46 @@ def register(request):
 
 @login_required
 def profile(request):
+    """Display or update data for user as candidate or organization"""
     user = request.user
 
     if request.method == "POST":
+        user_form = UserForm(request.POST, instance=user)
+        if user_form.is_valid():
+            user_form.save()
 
         if CandidateProfile.objects.filter(user=user.id).exists():
-            pass
+            candidate = request.user.candidateprofile
+            candidate_form = CandidateProfileForm(
+                request.POST, request.FILES, instance=candidate
+            )
+            location_form = LocationForm(
+                request.POST,
+                instance=candidate.location,
+            )
+
+            if candidate_form.is_valid() and location_form.is_valid():
+                candidate_form.save()
+                location_form.save()
 
         if OrganizationProfile.objects.filter(user=user.id).exists():
             organization = request.user.organizationprofile
-
             organization_form = OrganizationProfileForm(
                 request.POST, request.FILES, instance=organization
             )
-            user_form = UserForm(request.POST, instance=user)
-            city_form = CityForm(
-                request.POST,
-                instance=organization.location.city,
-            )
-            address_form = AddressForm(
+            location_form = LocationForm(
                 request.POST,
                 instance=organization.location,
             )
-            sector_form = SectorForm(
-                request.POST,
-                instance=organization.sector,
+
+            if location_form.is_valid():
+                location_form.save()
+
+            organization_updated = organization_form.save(commit=False)
+            organization_updated.sector = Sector.objects.get(
+                entitled=request.POST["entitled"],
             )
-
-            print(request.POST["name"])
-            print(request.POST["entitled"])
-
-            if sector_form.is_valid():
-                sector_form.save()
-            if user_form.is_valid():
-                user_form.save()
-            if city_form.is_valid():
-                city_form.save()
-            if address_form.is_valid():
-                address_form.save()
-            if organization_form.is_valid():
-                organization_form.save()
+            organization_updated.save()
 
         return HttpResponseRedirect(request.path)
 
@@ -77,10 +77,9 @@ def profile(request):
             candidate = request.user.candidateprofile
             context = {
                 "candidate_profile_form": CandidateProfileForm(
-                    candidate=candidate,
+                    instance=candidate,
                 ),
-                "city_form": CityForm(instance=candidate.location.city),
-                "address_form": AddressForm(instance=candidate.location),
+                "location_form": LocationForm(instance=candidate.location),
             }
 
         if OrganizationProfile.objects.filter(user=user.id).exists():
@@ -89,8 +88,7 @@ def profile(request):
                 "organization_profile_form": OrganizationProfileForm(
                     instance=organization
                 ),
-                "city_form": CityForm(instance=organization.location.city),
-                "address_form": AddressForm(instance=organization.location),
+                "location_form": LocationForm(instance=organization.location),
                 "sector_form": SectorForm(instance=organization.sector),
             }
 
