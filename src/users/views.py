@@ -1,16 +1,8 @@
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ObjectDoesNotExist
-from django.db.utils import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 
-from .models import (  # isort:skip
-    Address,
-    CandidateProfile,
-    City,
-    OrganizationProfile,
-    Sector,
-)
+from .models import CandidateProfile, OrganizationProfile
 
 from .forms import (  # isort:skip
     AddressForm,
@@ -37,121 +29,70 @@ def register(request):
 
 @login_required
 def profile(request):
-
     user = request.user
 
     if request.method == "POST":
 
-        try:
-            candidate = CandidateProfile.objects.get(user=user)
-            address = Address.objects.get(id=candidate.location.id)
-            city = City.objects.get(id=address.city.id)
-
-            user.first_name = request.POST["first_name"]
-            user.last_name = request.POST["last_name"]
-            user.save()
-
-            candidate.web_site_url = request.POST["web_site_url"]
-            candidate.linkedin_url = request.POST["linkedin_url"]
-            candidate.github_url = request.POST["github_url"]
-            candidate.gitlab_url = request.POST["gitlab_url"]
-            candidate.description = request.POST["description"]
-            candidate.save()
-
-            try:
-                city.name = request.POST["name"].upper()
-                city.zip_code = request.POST["zip_code"]
-                city.save()
-            except IntegrityError:
-                city = City.objects.filter(
-                    name__exact=request.POST["name"].upper()
-                ).first()
-                address.city = city
-
-            address.address_1 = request.POST["address_1"]
-            address.address_2 = request.POST["address_2"]
-            address.save()
-
-        except ObjectDoesNotExist:
+        if CandidateProfile.objects.filter(user=user.id).exists():
             pass
 
-        try:
-            organization = OrganizationProfile.objects.get(user=user)
-            address = Address.objects.get(id=organization.location.id)
-            city = City.objects.get(id=address.city.id)
+        if OrganizationProfile.objects.filter(user=user.id).exists():
+            organization = request.user.organizationprofile
 
-            user.first_name = request.POST["first_name"]
-            user.last_name = request.POST["last_name"]
-            user.save()
+            organization_form = OrganizationProfileForm(
+                request.POST, request.FILES, instance=organization
+            )
+            user_form = UserForm(request.POST, instance=user)
+            city_form = CityForm(
+                request.POST,
+                instance=organization.location.city,
+            )
+            address_form = AddressForm(
+                request.POST,
+                instance=organization.location,
+            )
+            sector_form = SectorForm(
+                request.POST,
+                instance=organization.sector,
+            )
 
-            organization.rna_code = request.POST["rna_code"].upper()
-            organization.siret_code = request.POST["siret_code"]
-            organization.email = request.POST["email"]
-            organization.phone_number = request.POST["phone_number"]
-            organization.web_site_url = request.POST["web_site_url"]
-            organization.denomination = request.POST["denomination"]
-            organization.description = request.POST["description"]
-            organization.sector = Sector.objects.get(id=request.POST["sector"])
-            organization.save()
+            print(request.POST["name"])
+            print(request.POST["entitled"])
 
-            address.address_1 = request.POST["address_1"]
-            address.address_2 = request.POST["address_2"]
-            address.save()
-
-            try:
-                city.name = request.POST["name"].upper()
-                city.zip_code = request.POST["zip_code"]
-                city.save()
-            except IntegrityError:
-                city = City.objects.filter(
-                    name__exact=request.POST["name"].upper()
-                ).first()
-                address.city = city
-
-            address.address_1 = request.POST["address_1"]
-            address.address_2 = request.POST["address_2"]
-            address.save()
-
-        except ObjectDoesNotExist:
-            pass
+            if sector_form.is_valid():
+                sector_form.save()
+            if user_form.is_valid():
+                user_form.save()
+            if city_form.is_valid():
+                city_form.save()
+            if address_form.is_valid():
+                address_form.save()
+            if organization_form.is_valid():
+                organization_form.save()
 
         return HttpResponseRedirect(request.path)
 
     else:
-        try:
-            candidate = CandidateProfile.objects.get(user=user)
-            address = Address.objects.get(id=candidate.location.id)
-            city = City.objects.get(id=address.city.id)
+        if CandidateProfile.objects.filter(user=user.id).exists():
+            candidate = request.user.candidateprofile
+            context = {
+                "candidate_profile_form": CandidateProfileForm(
+                    candidate=candidate,
+                ),
+                "city_form": CityForm(instance=candidate.location.city),
+                "address_form": AddressForm(instance=candidate.location),
+            }
 
-            if candidate:
-                context = {
-                    "candidate_profile_form": CandidateProfileForm(
-                        instance=candidate,
-                    ),
-                    "city_form": CityForm(instance=city),
-                    "address_form": AddressForm(instance=address),
-                }
-        except ObjectDoesNotExist:
-            pass
-
-        try:
-            organization = OrganizationProfile.objects.get(user=user)
-            sector = Sector.objects.get(id=organization.sector.id)
-            address = Address.objects.get(id=organization.location.id)
-            city = City.objects.get(id=address.city.id)
-
-            if organization:
-                context = {
-                    "organization_profile_form": OrganizationProfileForm(
-                        instance=organization,
-                    ),
-                    "city_form": CityForm(instance=city),
-                    "address_form": AddressForm(instance=address),
-                    "sector_form": SectorForm(instance=sector),
-                }
-        except ObjectDoesNotExist:
-            pass
+        if OrganizationProfile.objects.filter(user=user.id).exists():
+            organization = request.user.organizationprofile
+            context = {
+                "organization_profile_form": OrganizationProfileForm(
+                    instance=organization
+                ),
+                "city_form": CityForm(instance=organization.location.city),
+                "address_form": AddressForm(instance=organization.location),
+                "sector_form": SectorForm(instance=organization.sector),
+            }
 
         context["user_form"] = UserForm(instance=user)
-
         return render(request, "users/profile.html", context)
