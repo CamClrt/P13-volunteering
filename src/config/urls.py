@@ -32,6 +32,10 @@ urlpatterns = [
         "users/",
         include("users.urls"),
     ),
+    path(
+        "candidate/",
+        include("candidate.urls"),
+    ),
 ]
 
 if settings.DEBUG:
