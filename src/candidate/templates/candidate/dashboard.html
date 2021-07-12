@@ -1,5 +1,30 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Dashboard candidat</h1>
+<h1>Dashboard bénévole</h1>
+<legend class="border-bottom mb-4"></legend>
+
+
+
+
+<div class="row">
+    <div class="col-md-8">
+        <h4>👉 Mes compétences</h4>
+        <h4>👉 Mes disponibilités</h4>
+        <h4>👉 Mes souhaits</h4>
+    </div>
+    <div class="col-md-4">
+        <div class="content-section">
+            <h3>Actualiser mes informations</h3>
+            <p class='text-muted text-center'>Créer 💥 ・ Modifier 🌀 ・ Supprimer ❌
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-light"><a class="nav-link" href="#">Compétences</a></li>
+                <li class="list-group-item list-group-item-light"><a class="nav-link" href="#">Disponibilités</a></li>
+                <li class="list-group-item list-group-item-light"><a class="nav-link" href="#">Souhaits</a></li>
+            </ul>
+            </p>
+        </div>
+    </div>
+</div>
+
 {% endblock content %}
