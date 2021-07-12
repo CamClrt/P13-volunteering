@@ -8,6 +8,7 @@ from django.db.models.signals import post_save
 from django.utils import timezone
 from PIL import Image
 
+from candidate.models import Activity
 from config import settings
 
 
@@ -229,6 +230,8 @@ class CandidateProfile(models.Model):
         related_name="candidate_location",
         related_query_name="candidate_location",
     )
+    activity = models.ManyToManyField(Activity)
+
     description = models.TextField(
         max_length=500,
         blank=True,
