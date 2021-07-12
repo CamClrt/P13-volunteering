@@ -7,5 +7,6 @@ omit =
         *config*
         *admin*
         *apps*
+        *tests_*
         *manage.py
         *__init__*
