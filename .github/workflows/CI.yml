@@ -33,4 +33,7 @@ jobs:
           pip install pytest-django
 
       - name: Run Django tests
-        run: python -Wa src/manage.py test home users candidate --noinput -v 2
+        run: coverage run --source='src' src/manage.py test home users candidate
+
+      - name: Coverage report
+        run: coverage report

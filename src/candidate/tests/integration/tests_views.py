@@ -4,7 +4,7 @@ from django.urls import reverse
 from users.models import CustomUser
 
 
-class TestProfileView(TestCase):
+class TestDashboardView(TestCase):
     def setUp(self):
         self.user = CustomUser.objects.create_user(
             email="inconnu@mail.com",
