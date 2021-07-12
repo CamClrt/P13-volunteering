@@ -48,3 +48,8 @@ class Activity(models.Model):
         blank=True,
         choices=ACTIVITY_CHOICES,
     )
+
+    def __str__(self):
+        for activity in self.ACTIVITY_CHOICES:
+            if activity[0] == self.name:
+                return activity[1]
