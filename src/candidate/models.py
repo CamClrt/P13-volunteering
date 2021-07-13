@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class Activity(models.Model):
@@ -53,3 +54,47 @@ class Activity(models.Model):
         for activity in self.ACTIVITY_CHOICES:
             if activity[0] == self.name:
                 return activity[1]
+
+
+class Availability(models.Model):
+    AVAILABILITY_CHOICES = [
+        (
+            "ponctuel",
+            "Ponctuel",
+        ),
+        (
+            "journalier",
+            "Chaque jour",
+        ),
+        (
+            "hebdomadaire",
+            "Chaque semaine",
+        ),
+        (
+            "quinzomadaire",
+            "Toutes les 2 semaines",
+        ),
+        (
+            "mensuel",
+            "Chaque mois",
+        ),
+        (
+            "bimestriel",
+            "Tous les 2 mois",
+        ),
+        (
+            "trimestriel",
+            "Chaque trimestre",
+        ),
+    ]
+    created_on = models.DateTimeField(default=timezone.now)
+    last_updated = models.DateTimeField(auto_now=True)
+    start_date = models.DateField()
+    end_date = models.DateField(blank=True, null=True)
+    hour_per_session = models.PositiveSmallIntegerField()
+    type = models.CharField(
+        max_length=(50),
+        unique=True,
+        blank=True,
+        choices=AVAILABILITY_CHOICES,
+    )
