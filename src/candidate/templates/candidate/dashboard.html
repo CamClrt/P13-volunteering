@@ -9,9 +9,15 @@
 
 <div class="row">
     <div class="col-md-8">
-        <h4>👉 Mes compétences</h4>
-        <h4>👉 Mes disponibilités</h4>
-        <h4>👉 Mes souhaits</h4>
+        <h4>🛠 Mes compétences</h4>
+        {% for activity in activities %}
+        <ul>
+            <li>{{ activity }}</li>
+        </ul>
+
+        {% endfor %}
+        <h4>🗓 Mes disponibilités</h4>
+        <h4>💬 Mes souhaits</h4>
     </div>
     <div class="col-md-4">
         <div class="content-section">
