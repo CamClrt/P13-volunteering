@@ -1,7 +1,9 @@
+import datetime
+
 from django.test import TestCase
 from django.urls import reverse
 
-from candidate.models import Activity
+from candidate.models import Activity, Availability
 from users.models import CustomUser
 
 
@@ -51,15 +53,42 @@ class TestDashboardViews(TestCase):
         self.assertRedirects(response, reverse("candidate:dashboard"), 302)
         self.assertEqual(len(self.user.candidateprofile.activity.all()), 0)
 
-    def test_display_availability_ok(self):
+    def test_display_availability_get(self):
         self.client.force_login(self.user)
         response = self.client.get(reverse("candidate:availability"))
         self.assertTemplateUsed(response, "candidate/availability.html")
         self.assertEqual(response.status_code, 200)
 
-    def test_display_availability_not_ok(self):
-        response = self.client.get(reverse("candidate:availability"))
-        self.assertEqual(response.status_code, 302)
+    def test_display_availability_post(self):
+        data = {
+            "type": "ponctuel",
+            "hour_per_session": "2",
+            "start_date_day": "1",
+            "start_date_month": "7",
+            "start_date_year": "2021",
+            "end_date_day": "",
+            "end_date_month": "",
+            "end_date_year": "",
+        }
+        self.client.force_login(self.user)
+        response = self.client.post(reverse("candidate:availability"), data)
+        self.assertRedirects(response, reverse("candidate:availability"), 302)
+        self.assertEqual(len(self.user.candidateprofile.availability.all()), 1)
+
+    def test_remove_availability(self):
+        availability = Availability.objects.create(
+            type="ponctuel",
+            hour_per_session="2",
+            start_date=datetime.date(2021, 8, 1),
+            end_date=datetime.date(2022, 8, 1),
+        )
+        self.client.force_login(self.user)
+        self.user.candidateprofile.availability.set([availability])
+        self.assertEqual(len(self.user.candidateprofile.availability.all()), 1)
+        self.client.get(
+            reverse("candidate:remove_availability", args=(availability.id,))
+        )
+        self.assertEqual(len(self.user.candidateprofile.availability.all()), 0)
 
     def test_display_wish_ok(self):
         self.client.force_login(self.user)

@@ -94,7 +94,5 @@ class Availability(models.Model):
     hour_per_session = models.PositiveSmallIntegerField()
     type = models.CharField(
         max_length=(50),
-        unique=True,
-        blank=True,
         choices=AVAILABILITY_CHOICES,
     )
