@@ -26,21 +26,28 @@ class Dashboard(TemplateView):
         return self.render_to_response(context)
 
 
-@login_required
-def activity(request):
-    user = request.user.candidateprofile
-    if request.method == "POST":
-        form = ActivityForm(request.POST)
-        if form.is_valid():
-            user.activity.set(form.cleaned_data.get("name"))
-        else:
-            user.activity.clear()
-        return redirect("candidate:dashboard")
-    else:
+@method_decorator(login_required, name="dispatch")
+class DisplayActivity(FormView):
+    template_name = "candidate/activity.html"
+    form_class = ActivityForm
+    success_url = reverse_lazy("candidate:dashboard")
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
         data = {}
-        data["name"] = user.activity.all()
-        form = ActivityForm(initial=data)
-    return render(request, "candidate/activity.html", {"form": form})
+        data["name"] = request.user.candidateprofile.activity.all()
+        context["form"] = ActivityForm(initial=data)
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            request.user.candidateprofile.activity.set(
+                form.cleaned_data.get("name"),
+            )
+        else:
+            request.user.candidateprofile.activity.clear()
+        return self.form_valid(form)
 
 
 @method_decorator(login_required, name="dispatch")
