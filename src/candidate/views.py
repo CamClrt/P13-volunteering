@@ -1,7 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic.base import TemplateView, View
+from django.views.generic.edit import FormView
 
 from candidate.forms import ActivityForm, AvailabilityForm
 from candidate.models import Availability
@@ -42,16 +44,24 @@ def activity(request):
 
 
 @method_decorator(login_required, name="dispatch")
-class DisplayAvailability(View):
+class DisplayAvailability(FormView):
+    template_name = "candidate/availability.html"
+    form_class = AvailabilityForm
+    success_url = reverse_lazy("candidate:availability")
+
+    def get_context_data(self, request, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context[
+            "availabilities"
+        ] = request.user.candidateprofile.availability.all()  # noqa: E501
+        return context
+
     def get(self, request, *args, **kwargs):
-        context = {
-            "form": AvailabilityForm(),
-            "availabilities": request.user.candidateprofile.availability.all(),
-        }
-        return render(request, "candidate/availability.html", context)
+        context = self.get_context_data(request, **kwargs)
+        return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
-        form = AvailabilityForm(request.POST)
+        form = self.get_form()
         if form.is_valid():
             data = form.cleaned_data
             availability = Availability.objects.create(
@@ -61,7 +71,9 @@ class DisplayAvailability(View):
                 end_date=data["end_date"],
             )
             request.user.candidateprofile.availability.add(availability)
-        return redirect("candidate:availability")
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 
 @method_decorator(login_required, name="dispatch")
