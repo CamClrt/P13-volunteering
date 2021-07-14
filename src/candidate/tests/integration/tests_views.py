@@ -7,7 +7,7 @@ from candidate.models import Activity, Availability
 from users.models import CustomUser
 
 
-class TestDashboardViews(TestCase):
+class TestDashboardView(TestCase):
     def setUp(self):
         self.user = CustomUser.objects.create_user(
             email="inconnu@mail.com",
@@ -26,6 +26,17 @@ class TestDashboardViews(TestCase):
     def test_display_dashboard_not_ok(self):
         response = self.client.get(reverse("candidate:dashboard"))
         self.assertEqual(response.status_code, 302)
+
+
+class TestActivityView(TestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(
+            email="inconnu@mail.com",
+            password="1234AZERTY",
+            first_name="John",
+            last_name="Doe",
+            status="BENEVOLE",
+        )
 
     def test_get_activity_ok(self):
         self.client.force_login(self.user)
@@ -52,6 +63,17 @@ class TestDashboardViews(TestCase):
         response = self.client.post(reverse("candidate:activity"), data)
         self.assertRedirects(response, reverse("candidate:dashboard"), 302)
         self.assertEqual(len(self.user.candidateprofile.activity.all()), 0)
+
+
+class TestAvailabilityView(TestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(
+            email="inconnu@mail.com",
+            password="1234AZERTY",
+            first_name="John",
+            last_name="Doe",
+            status="BENEVOLE",
+        )
 
     def test_display_availability_get(self):
         self.client.force_login(self.user)
@@ -89,6 +111,17 @@ class TestDashboardViews(TestCase):
             reverse("candidate:remove_availability", args=(availability.id,))
         )
         self.assertEqual(len(self.user.candidateprofile.availability.all()), 0)
+
+
+class TestWishView(TestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(
+            email="inconnu@mail.com",
+            password="1234AZERTY",
+            first_name="John",
+            last_name="Doe",
+            status="BENEVOLE",
+        )
 
     def test_display_wish_ok(self):
         self.client.force_login(self.user)
