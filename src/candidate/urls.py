@@ -1,12 +1,17 @@
 from django.urls import path
 
-from .views import DisplayAvailability  # remove_availability,
-from .views import RemoveAvailability, activity, dashboard, wish
+from .views import (  # isort:skip
+    Dashboard,
+    DisplayAvailability,
+    RemoveAvailability,
+    activity,
+    wish,
+)
 
 app_name = "candidate"
 
 urlpatterns = [
-    path("dashboard/", dashboard, name="dashboard"),
+    path("dashboard/", Dashboard.as_view(), name="dashboard"),
     path("activity/", activity, name="activity"),
     path("availability/", DisplayAvailability.as_view(), name="availability"),
     path(

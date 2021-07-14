@@ -1,19 +1,27 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
-from django.views.generic.base import View
+from django.views.generic.base import TemplateView, View
 
 from candidate.forms import ActivityForm, AvailabilityForm
 from candidate.models import Availability
 
 
-@login_required
-def dashboard(request):
-    context = {
-        "activities": request.user.candidateprofile.activity.all(),
-        "availabilities": request.user.candidateprofile.availability.all(),
-    }
-    return render(request, "candidate/dashboard.html", context)
+@method_decorator(login_required, name="dispatch")
+class Dashboard(TemplateView):
+    template_name = "candidate/dashboard.html"
+
+    def get_context_data(self, request, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["activities"] = request.user.candidateprofile.activity.all()
+        context[
+            "availabilities"
+        ] = request.user.candidateprofile.availability.all()  # noqa: E501
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(request, **kwargs)
+        return self.render_to_response(context)
 
 
 @login_required
