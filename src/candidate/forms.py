@@ -2,8 +2,8 @@ from datetime import date
 
 from django import forms
 
-from candidate.models import Activity, Availability
-from users.models import Sector, Wish
+from candidate.models import Activity
+from users.models import Availability, Sector, Wish
 
 today = date.today()
 

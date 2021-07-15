@@ -3,8 +3,8 @@ import datetime
 from django.test import TestCase
 from django.urls import reverse
 
-from candidate.models import Activity, Availability
-from users.models import CustomUser, Sector
+from candidate.models import Activity
+from users.models import Availability, CustomUser, Sector
 
 
 class TestDashboardView(TestCase):
