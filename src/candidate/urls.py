@@ -6,7 +6,6 @@ from .views import (  # isort:skip
     DisplayAvailability,
     RemoveAvailability,
     DisplayAndUpdateWish,
-    # wish,
 )
 
 app_name = "candidate"
@@ -32,7 +31,6 @@ urlpatterns = [
         RemoveAvailability.as_view(),
         name="remove_availability",
     ),
-    # path("wish/", wish, name="wish",),
     path(
         "wish/",
         DisplayAndUpdateWish.as_view(),

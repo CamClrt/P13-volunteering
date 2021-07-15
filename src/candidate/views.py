@@ -6,8 +6,7 @@ from django.views.generic.base import TemplateView, View
 from django.views.generic.edit import FormView
 
 from candidate.forms import ActivityForm, AvailabilityForm, WishForm
-from candidate.models import Availability
-from users.models import Sector, Wish
+from users.models import Availability, Sector, Wish
 
 
 @method_decorator(login_required, name="dispatch")

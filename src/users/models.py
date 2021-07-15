@@ -8,7 +8,7 @@ from django.db.models.signals import post_save
 from django.utils import timezone
 from PIL import Image
 
-from candidate.models import Activity, Availability
+from candidate.models import Activity
 from config import settings
 
 
@@ -216,6 +216,48 @@ class OrganizationProfile(models.Model):
             output_size = (300, 300)
             img.thumbnail(output_size)
             img.save(self.logo.path)
+
+
+class Availability(models.Model):
+    AVAILABILITY_CHOICES = [
+        (
+            "ponctuel",
+            "Ponctuel",
+        ),
+        (
+            "journalier",
+            "Chaque jour",
+        ),
+        (
+            "hebdomadaire",
+            "Chaque semaine",
+        ),
+        (
+            "quinzomadaire",
+            "Toutes les 2 semaines",
+        ),
+        (
+            "mensuel",
+            "Chaque mois",
+        ),
+        (
+            "bimestriel",
+            "Tous les 2 mois",
+        ),
+        (
+            "trimestriel",
+            "Chaque trimestre",
+        ),
+    ]
+    created_on = models.DateTimeField(default=timezone.now)
+    last_updated = models.DateTimeField(auto_now=True)
+    start_date = models.DateField()
+    end_date = models.DateField(blank=True, null=True)
+    hour_per_session = models.PositiveSmallIntegerField()
+    type = models.CharField(
+        max_length=(50),
+        choices=AVAILABILITY_CHOICES,
+    )
 
 
 class CandidateProfile(models.Model):
