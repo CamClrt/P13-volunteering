@@ -3,6 +3,7 @@ from datetime import date
 from django import forms
 
 from candidate.models import Activity, Availability
+from users.models import Sector, Wish
 
 today = date.today()
 
@@ -85,4 +86,24 @@ class AvailabilityForm(forms.ModelForm):
                 months=MONTHS,
             ),
             "hour_per_session": forms.RadioSelect(choices=HOURS_CHOICES),
+        }
+
+
+class WishForm(forms.ModelForm):
+    sector = forms.MultipleChoiceField(
+        choices=Sector.SECTOR_CHOICES,
+        label="Secteur(s) d'activité (1 choix min)",
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    class Meta:
+        model = Wish
+        fields = [
+            "remote",
+            "scoop",
+            "sector",
+        ]
+        labels = {
+            "remote": "A distance",
+            "scoop": "Zone de déplacement possible",
         }

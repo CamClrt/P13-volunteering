@@ -230,6 +230,7 @@ class CandidateProfile(models.Model):
         related_name="candidate_location",
         related_query_name="candidate_location",
     )
+
     activity = models.ManyToManyField(Activity)
     availability = models.ManyToManyField(Availability)
 
@@ -265,6 +266,41 @@ class CandidateProfile(models.Model):
             img.save(self.avatar.path)
 
 
+class Wish(models.Model):
+    MOVE_CHOICES = [
+        (
+            "city",
+            "Local",
+        ),
+        (
+            "department",
+            "Départemental",
+        ),
+        (
+            "region",
+            "Régional",
+        ),
+        (
+            "country",
+            "National",
+        ),
+    ]
+
+    candidate = models.OneToOneField(
+        CandidateProfile,
+        on_delete=models.CASCADE,
+    )
+    created_on = models.DateTimeField(default=timezone.now)
+    last_updated = models.DateTimeField(auto_now=True)
+    remote = models.BooleanField(default=False)
+    scoop = models.CharField(
+        max_length=(20),
+        blank=True,
+        choices=MOVE_CHOICES,
+    )
+    sector = models.ManyToManyField(Sector)
+
+
 def post_profile_save_receiver(sender, instance, created, **kwargs):
     """Create a profil and other infos, when user is registered"""
     if created:
@@ -282,15 +318,6 @@ def post_profile_save_receiver(sender, instance, created, **kwargs):
             )
 
         if instance.status == "ASSOCIATION":
-            sector = Sector.objects.all()
-            if not sector:
-                sector = Sector.objects.create(entitled="A")
-                sector = Sector.objects.create(entitled="ASH")
-                sector = Sector.objects.create(entitled="CL")
-                sector = Sector.objects.create(entitled="DD")
-                sector = Sector.objects.create(entitled="EFI")
-                sector = Sector.objects.create(entitled="S")
-
             OrganizationProfile.objects.create(
                 user=instance,
                 location=location,

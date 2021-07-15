@@ -25,12 +25,11 @@
             </li>
         </ul>
         {% endfor %}
-        <h4 class="mb-4 mt-4">💬 Mes souhaits</h4>
     </div>
     <div class="col-md-4">
         <div class="content-section">
             <h3>Actualiser mes informations</h3>
-            <p class='text-muted text-center'>Créer 💥 ・ Modifier 🌀 ・ Supprimer ❌
+            <p class='text-muted text-center'>Créer ➕ ・ Modifier 📝 ・ Supprimer ❌
             <ul class="list-group">
                 <li class="list-group-item list-group-item-light"><a class="nav-link"
                         href="{% url 'candidate:activity' %}">Compétences</a></li>
@@ -40,6 +39,31 @@
                         href="{% url 'candidate:wish' %}">Souhaits</a></li>
             </ul>
             </p>
+
+            <h4 class="mb-4 mt-5">💬 Mes souhaits</h4>
+            {% if wish.get_scoop_display %}
+            <p><strong>Zone de déplacement envisagée 🚘</strong>
+            <ul>
+                <li>{{wish.get_scoop_display}}</li>
+            </ul>
+            </p>
+            {% endif %}
+
+
+            <p><strong>Intervention à distance 💻</strong>
+            <ul>
+                <li>{% if wish.remote %} Possible {% else %} Non souhaitée {%endif%}</li>
+            </ul>
+            </p>
+
+            <p><strong>Secteur(s) souhaité(s) 📍</strong>
+            <ul>
+                {% for sector in sectors %}
+                <li>{{sector.get_entitled_display}}</li>
+                {% endfor %}
+            </ul>
+            </p>
+
         </div>
     </div>
 </div>
