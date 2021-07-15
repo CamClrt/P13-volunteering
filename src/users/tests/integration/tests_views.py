@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from users.models import CustomUser
+from users.models import CustomUser, Sector
 
 
 class TestRegisterView(TestCase):
@@ -40,6 +40,7 @@ class TestRegisterView(TestCase):
 
 class TestProfileView(TestCase):
     def setUp(self):
+        Sector.objects.create(entitled="A")
         CustomUser.objects.create_user(
             email="inconnu1@mail.com",
             first_name="inconnu",
@@ -115,7 +116,7 @@ class TestProfileView(TestCase):
             "logo": "default.jpg",
             "denomination": "association",
             "description": "bio",
-            "entitled": "ASH",
+            "entitled": "A",
             "rna_code": "W999999999",
             "siret_code": "99999999999999",
             "email": "mail@mail.com",
@@ -136,7 +137,7 @@ class TestProfileView(TestCase):
         self.assertEqual(user.organizationprofile.logo, "default.jpg")
         self.assertEqual(user.organizationprofile.denomination, "association")
         self.assertEqual(user.organizationprofile.description, "bio")
-        self.assertEqual(user.organizationprofile.sector.entitled, "ASH")
+        self.assertEqual(user.organizationprofile.sector.entitled, "A")
         self.assertEqual(user.organizationprofile.rna_code, "W999999999")
         self.assertEqual(user.organizationprofile.siret_code, "99999999999999")
         self.assertEqual(user.organizationprofile.email, "mail@mail.com")
