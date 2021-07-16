@@ -1,10 +1,17 @@
 from django.urls import path
-
-from home.views import home, legal_notices
+from django.views.generic import TemplateView
 
 app_name = "home"
 
 urlpatterns = [
-    path("", home, name="home"),
-    path("legal_notices", legal_notices, name="legal_notices"),
+    path(
+        "",
+        TemplateView.as_view(template_name="home/home.html"),
+        name="home",
+    ),
+    path(
+        "",
+        TemplateView.as_view(template_name="home/legal_notices.html"),
+        name="legal_notices",
+    ),
 ]
