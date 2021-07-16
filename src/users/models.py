@@ -8,7 +8,6 @@ from django.db.models.signals import post_save
 from django.utils import timezone
 from PIL import Image
 
-from candidate.models import Activity
 from config import settings
 
 
@@ -172,14 +171,14 @@ class OrganizationProfile(models.Model):
         on_delete=models.CASCADE,
     )
     sector = models.ForeignKey(
-        Sector,
+        "users.Sector",
         on_delete=models.SET_NULL,
         null=True,
         related_name="sector",
         related_query_name="sector",
     )
     location = models.ForeignKey(
-        Location,
+        "users.Location",
         on_delete=models.SET_NULL,
         null=True,
         related_name="organization_location",
@@ -281,15 +280,15 @@ class CandidateProfile(models.Model):
         on_delete=models.CASCADE,
     )
     location = models.ForeignKey(
-        Location,
+        "users.Location",
         on_delete=models.SET_NULL,
         null=True,
         related_name="candidate_location",
         related_query_name="candidate_location",
     )
 
-    activity = models.ManyToManyField(Activity)
-    availability = models.ManyToManyField(Availability)
+    activity = models.ManyToManyField("candidate.Activity")
+    availability = models.ManyToManyField("users.Availability")
 
     description = models.TextField(
         max_length=500,
@@ -347,7 +346,7 @@ class Wish(models.Model):
     ]
 
     candidate = models.OneToOneField(
-        CandidateProfile,
+        "users.CandidateProfile",
         on_delete=models.CASCADE,
     )
     created_on = models.DateTimeField(default=timezone.now)
@@ -358,7 +357,7 @@ class Wish(models.Model):
         blank=True,
         choices=MOVE_CHOICES,
     )
-    sector = models.ManyToManyField(Sector)
+    sector = models.ManyToManyField("users.Sector")
 
     def __str__(self):
         return f"{self.candidate}: {self.remote}, {self.scoop}, {self.sector}"
