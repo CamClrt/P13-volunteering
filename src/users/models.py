@@ -29,6 +29,9 @@ class Sector(models.Model):
         choices=SECTOR_CHOICES,
     )
 
+    def __str__(self):
+        return self.entitled
+
 
 class Location(models.Model):
     address_1 = models.CharField(
@@ -48,6 +51,9 @@ class Location(models.Model):
         max_length=5,
         blank=True,
     )
+
+    def __str__(self):
+        return f"{self.address_1}, {self.zip_code} {self.city}"
 
     def save(self, *args, **kwargs):
         self.city = self.city.upper()
@@ -135,6 +141,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         "status",
     ]
 
+    def __str__(self):
+        return self.email
+
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
         # Simplest possible answer: Yes, always
@@ -207,6 +216,9 @@ class OrganizationProfile(models.Model):
         upload_to="organization",
     )
 
+    def __str__(self):
+        return f"{self.user}: {self.denomination}"
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
@@ -259,6 +271,9 @@ class Availability(models.Model):
         choices=AVAILABILITY_CHOICES,
     )
 
+    def __str__(self):
+        return f"{self.id}: {self.type}, {self.hour_per_session}h"
+
 
 class CandidateProfile(models.Model):
     user = models.OneToOneField(
@@ -296,6 +311,9 @@ class CandidateProfile(models.Model):
         default="default.jpg",
         upload_to="candidate",
     )
+
+    def __str__(self):
+        return self.user
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -341,6 +359,9 @@ class Wish(models.Model):
         choices=MOVE_CHOICES,
     )
     sector = models.ManyToManyField(Sector)
+
+    def __str__(self):
+        return f"{self.candidate}: {self.remote}, {self.scoop}, {self.sector}"
 
 
 def post_profile_save_receiver(sender, instance, created, **kwargs):
