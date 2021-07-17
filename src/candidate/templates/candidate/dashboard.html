@@ -12,7 +12,7 @@
         <h4 class="mb-4">🛠 Mes compétences</h4>
         {% for activity in activities %}
         <ul>
-            <li>{{ activity }}</li>
+            <li>{{ activity.get_name_display }}</li>
         </ul>
 
         {% endfor %}
