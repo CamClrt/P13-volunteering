@@ -6,6 +6,7 @@ from django.contrib.auth.models import (  # isort:skip
 from django.db import models
 from django.db.models.signals import post_save
 from django.utils import timezone
+from model_utils.models import TimeStampedModel
 from PIL import Image
 
 
@@ -30,7 +31,7 @@ class Sector(models.Model):
         return self.entitled
 
 
-class Location(models.Model):
+class Location(TimeStampedModel):
     address_1 = models.CharField(
         max_length=250,
         blank=True,
@@ -102,7 +103,7 @@ class MyUserManager(BaseUserManager):
         return user
 
 
-class CustomUser(AbstractBaseUser, PermissionsMixin):
+class CustomUser(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
 
     email = models.EmailField(
         verbose_name="email address",
@@ -112,7 +113,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     first_name = models.CharField(max_length=50, blank=False)
     last_name = models.CharField(max_length=50, blank=False)
-    date_joined = models.DateTimeField(default=timezone.now)
 
     STATUS_CHOICES = [
         ("BENEVOLE", "Un bénévole"),
@@ -163,7 +163,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         super().save(*args, **kwargs)
 
 
-class OrganizationProfile(models.Model):
+class OrganizationProfile(TimeStampedModel):
     user = models.OneToOneField(
         "users.CustomUser",
         on_delete=models.CASCADE,
@@ -227,7 +227,7 @@ class OrganizationProfile(models.Model):
             img.save(self.logo.path)
 
 
-class Availability(models.Model):
+class Availability(TimeStampedModel):
     AVAILABILITY_CHOICES = [
         (
             "ponctuel",
@@ -258,8 +258,6 @@ class Availability(models.Model):
             "Chaque trimestre",
         ),
     ]
-    created_on = models.DateTimeField(default=timezone.now)
-    last_updated = models.DateTimeField(auto_now=True)
     start_date = models.DateField()
     end_date = models.DateField(blank=True, null=True)
     hour_per_session = models.PositiveSmallIntegerField()
@@ -272,7 +270,7 @@ class Availability(models.Model):
         return f"{self.id}: {self.type}, {self.hour_per_session}h"
 
 
-class CandidateProfile(models.Model):
+class CandidateProfile(TimeStampedModel):
     user = models.OneToOneField(
         "users.CustomUser",
         on_delete=models.CASCADE,
@@ -323,7 +321,7 @@ class CandidateProfile(models.Model):
             img.save(self.avatar.path)
 
 
-class Wish(models.Model):
+class Wish(TimeStampedModel):
     MOVE_CHOICES = [
         (
             "city",
