@@ -14,8 +14,16 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         logging.info("data insertion in DB: starting")
         try:
-            for sector in Sector.SECTOR_CHOICES:
-                Sector.objects.create(entitled=sector[0])
+            Sector.objects.bulk_create(
+                [
+                    Sector(entitled="ASH"),
+                    Sector(entitled="CL"),
+                    Sector(entitled="DD"),
+                    Sector(entitled="EFI"),
+                    Sector(entitled="S"),
+                    Sector(entitled="A"),
+                ]
+            )
         except IntegrityError:
             logging.warning("sector data already existed")
         logging.info("sector data insertion in DB: finished")
