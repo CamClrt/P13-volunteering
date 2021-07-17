@@ -10,3 +10,5 @@ omit =
         *tests_*
         *manage.py
         *__init__*
+        *create_activity.py
+        *create_sector.py
