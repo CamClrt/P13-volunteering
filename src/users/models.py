@@ -107,6 +107,16 @@ class MyUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
+    class UserStatus(models.TextChoices):
+        BENEVOLE = "BENEVOLE", "Un bénévole"
+        ASSOCIATION = "ASSOCIATION", "Une association"
+
+    status = models.CharField(
+        "type de compte",
+        max_length=25,
+        choices=UserStatus.choices,
+        blank=False,
+    )
 
     email = models.EmailField(
         "email",
@@ -122,18 +132,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
     last_name = models.CharField(
         "nom",
         max_length=50,
-        blank=False,
-    )
-
-    STATUS_CHOICES = [
-        ("BENEVOLE", "Un bénévole"),
-        ("ASSOCIATION", "Une association"),
-    ]
-
-    status = models.CharField(
-        "type de compte",
-        max_length=25,
-        choices=STATUS_CHOICES,
         blank=False,
     )
 
@@ -258,36 +256,20 @@ class OrganizationProfile(Profile):
 
 
 class Availability(TimeStampedModel):
-    AVAILABILITY_CHOICES = [
-        (
-            "ponctuel",
-            "Ponctuel",
-        ),
-        (
-            "journalier",
-            "Chaque jour",
-        ),
-        (
-            "hebdomadaire",
-            "Chaque semaine",
-        ),
-        (
-            "quinzomadaire",
-            "Toutes les 2 semaines",
-        ),
-        (
-            "mensuel",
-            "Chaque mois",
-        ),
-        (
-            "bimestriel",
-            "Tous les 2 mois",
-        ),
-        (
-            "trimestriel",
-            "Chaque trimestre",
-        ),
-    ]
+    class CandidateAvailability(models.TextChoices):
+        OPTION_1 = "ponctuel", "Ponctuel"
+        OPTION_2 = "journalier", "Chaque jour"
+        OPTION_3 = "hebdomadaire", "Chaque semaine"
+        OPTION_4 = "quinzomadaire", "Toutes les 2 semaines"
+        OPTION_5 = "mensuel", "Chaque mois"
+        OPTION_6 = "bimestriel", "Tous les 2 mois"
+        OPTION_7 = "trimestriel", "Chaque trimestre"
+
+    type = models.CharField(
+        "récurrence",
+        max_length=(50),
+        choices=CandidateAvailability.choices,
+    )
     start_date = models.DateField(
         "date de début",
     )
@@ -298,11 +280,6 @@ class Availability(TimeStampedModel):
     )
     hour_per_session = models.PositiveSmallIntegerField(
         "nombre d'heures par session",
-    )
-    type = models.CharField(
-        "récurrence",
-        max_length=(50),
-        choices=AVAILABILITY_CHOICES,
     )
 
     def __str__(self):
@@ -352,24 +329,11 @@ class CandidateProfile(Profile):
 
 
 class Wish(TimeStampedModel):
-    MOVE_CHOICES = [
-        (
-            "city",
-            "Local",
-        ),
-        (
-            "department",
-            "Départemental",
-        ),
-        (
-            "region",
-            "Régional",
-        ),
-        (
-            "country",
-            "National",
-        ),
-    ]
+    class CandidateWish(models.TextChoices):
+        OPTION_1 = "city", "Local"
+        OPTION_2 = "department", "Départemental"
+        OPTION_3 = "region", "Régional"
+        OPTION_4 = "country", "National"
 
     candidate = models.OneToOneField(
         "users.CandidateProfile",
@@ -383,7 +347,7 @@ class Wish(TimeStampedModel):
         "zone de déplacement",
         max_length=(20),
         blank=True,
-        choices=MOVE_CHOICES,
+        choices=CandidateWish.choices,
     )
     sectors = models.ManyToManyField(
         "users.Sector",
