@@ -163,24 +163,37 @@ class CustomUser(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
         super().save(*args, **kwargs)
 
 
-class OrganizationProfile(TimeStampedModel):
+class Profil(TimeStampedModel):
+
     user = models.OneToOneField(
         "users.CustomUser",
         on_delete=models.CASCADE,
     )
+    location = models.ForeignKey(
+        "users.Location",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    description = models.TextField(
+        max_length=500,
+        blank=True,
+    )
+    web_site_url = models.URLField(
+        blank=True,
+    )
+
+    class Meta:
+        abstract = True
+
+
+class OrganizationProfile(Profil):
+
     sector = models.ForeignKey(
         "users.Sector",
         on_delete=models.SET_NULL,
         null=True,
         related_name="sector",
         related_query_name="sector",
-    )
-    location = models.ForeignKey(
-        "users.Location",
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name="organization_location",
-        related_query_name="organization_location",
     )
     denomination = models.CharField(
         max_length=50,
@@ -197,15 +210,8 @@ class OrganizationProfile(TimeStampedModel):
     email = models.EmailField(
         blank=True,
     )
-    web_site_url = models.URLField(
-        blank=True,
-    )
     phone_number = models.CharField(
         max_length=10,
-        blank=True,
-    )
-    description = models.TextField(
-        max_length=500,
         blank=True,
     )
     logo = models.ImageField(
@@ -270,28 +276,13 @@ class Availability(TimeStampedModel):
         return f"{self.id}: {self.type}, {self.hour_per_session}h"
 
 
-class CandidateProfile(TimeStampedModel):
-    user = models.OneToOneField(
-        "users.CustomUser",
-        on_delete=models.CASCADE,
-    )
-    location = models.ForeignKey(
-        "users.Location",
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name="candidate_location",
-        related_query_name="candidate_location",
-    )
+class CandidateProfile(Profil):
 
-    activity = models.ManyToManyField("candidate.Activity")
-    availability = models.ManyToManyField("users.Availability")
-
-    description = models.TextField(
-        max_length=500,
-        blank=True,
+    activity = models.ManyToManyField(
+        "candidate.Activity",
     )
-    web_site_url = models.URLField(
-        blank=True,
+    availability = models.ManyToManyField(
+        "users.Availability",
     )
     linkedin_url = models.URLField(
         blank=True,
