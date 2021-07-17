@@ -43,6 +43,7 @@ class Activity(models.Model):
     ]
 
     name = models.CharField(
+        verbose_name="compétences",
         max_length=(50),
         unique=True,
         blank=True,

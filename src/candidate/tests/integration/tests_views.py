@@ -57,12 +57,12 @@ class TestActivityView(TestCase):
         data = {"name": [1, 2, 3, 4]}
         response = self.client.post(reverse("candidate:activity"), data)
         self.assertRedirects(response, reverse("candidate:dashboard"), 302)
-        self.assertEqual(len(self.user.candidateprofile.activity.all()), 4)
+        self.assertEqual(len(self.user.candidateprofile.activities.all()), 4)
 
         data = {"name": []}
         response = self.client.post(reverse("candidate:activity"), data)
         self.assertRedirects(response, reverse("candidate:dashboard"), 302)
-        self.assertEqual(len(self.user.candidateprofile.activity.all()), 0)
+        self.assertEqual(len(self.user.candidateprofile.activities.all()), 0)
 
 
 class TestAvailabilityView(TestCase):
@@ -95,7 +95,9 @@ class TestAvailabilityView(TestCase):
         self.client.force_login(self.user)
         response = self.client.post(reverse("candidate:availability"), data)
         self.assertRedirects(response, reverse("candidate:availability"), 302)
-        self.assertEqual(len(self.user.candidateprofile.availability.all()), 1)
+        self.assertEqual(
+            len(self.user.candidateprofile.availabilities.all()), 1
+        )  # noqa: E501
 
     def test_remove_availability(self):
         availability = Availability.objects.create(
@@ -105,12 +107,16 @@ class TestAvailabilityView(TestCase):
             end_date=datetime.date(2022, 8, 1),
         )
         self.client.force_login(self.user)
-        self.user.candidateprofile.availability.set([availability])
-        self.assertEqual(len(self.user.candidateprofile.availability.all()), 1)
+        self.user.candidateprofile.availabilities.set([availability])
+        self.assertEqual(
+            len(self.user.candidateprofile.availabilities.all()), 1
+        )  # noqa: E501
         self.client.get(
             reverse("candidate:remove_availability", args=(availability.id,))
         )
-        self.assertEqual(len(self.user.candidateprofile.availability.all()), 0)
+        self.assertEqual(
+            len(self.user.candidateprofile.availabilities.all()), 0
+        )  # noqa: E501
 
 
 class TestWishView(TestCase):
@@ -141,4 +147,4 @@ class TestWishView(TestCase):
         self.assertRedirects(response, reverse("candidate:dashboard"), 302)
         self.assertEqual(self.user.candidateprofile.wish.remote, True)
         self.assertEqual(self.user.candidateprofile.wish.scoop, "city")
-        self.assertEqual(len(self.user.candidateprofile.wish.sector.all()), 1)
+        self.assertEqual(len(self.user.candidateprofile.wish.sectors.all()), 1)
