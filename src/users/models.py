@@ -10,21 +10,20 @@ from PIL import Image
 
 
 class Sector(models.Model):
-    SECTOR_CHOICES = [
-        ("ASH", "Action sociale, Santé, Humanitaire"),
-        ("CL", "Culture et loisirs"),
-        ("DD", "Défense des droits"),
-        ("EFI", "Education, Formation, Insertion"),
-        ("S", "Sports"),
-        ("A", "Autres"),
-    ]
+    class OrganizationSector(models.TextChoices):
+        ASH = "ASH", "Action sociale, Santé, Humanitaire"
+        CL = "CL", "Culture et loisirs"
+        DD = "DD", "Défense des droits"
+        EFI = "EFI", "Education, Formation, Insertion"
+        S = "S", "Sports"
+        A = "A", "Autres"
 
     entitled = models.CharField(
         "intitulé",
         max_length=(5),
         unique=True,
         blank=True,
-        choices=SECTOR_CHOICES,
+        choices=OrganizationSector.choices,
     )
 
     def __str__(self):

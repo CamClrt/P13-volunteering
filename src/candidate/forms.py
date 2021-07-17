@@ -91,7 +91,7 @@ class AvailabilityForm(forms.ModelForm):
 
 class WishForm(forms.ModelForm):
     sector = forms.MultipleChoiceField(
-        choices=Sector.SECTOR_CHOICES,
+        choices=Sector.OrganizationSector.choices,
         label="Secteur(s) d'activité (1 choix min)",
         widget=forms.CheckboxSelectMultiple,
     )
