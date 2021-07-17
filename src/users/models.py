@@ -8,8 +8,6 @@ from django.db.models.signals import post_save
 from django.utils import timezone
 from PIL import Image
 
-from config import settings
-
 
 class Sector(models.Model):
     SECTOR_CHOICES = [
@@ -167,7 +165,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 class OrganizationProfile(models.Model):
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
+        "users.CustomUser",
         on_delete=models.CASCADE,
     )
     sector = models.ForeignKey(
@@ -276,7 +274,7 @@ class Availability(models.Model):
 
 class CandidateProfile(models.Model):
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
+        "users.CustomUser",
         on_delete=models.CASCADE,
     )
     location = models.ForeignKey(
@@ -387,4 +385,7 @@ def post_profile_save_receiver(sender, instance, created, **kwargs):
             )
 
 
-post_save.connect(post_profile_save_receiver, sender=settings.AUTH_USER_MODEL)
+post_save.connect(
+    post_profile_save_receiver,
+    sender="users.CustomUser",
+)

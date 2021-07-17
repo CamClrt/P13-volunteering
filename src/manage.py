@@ -3,10 +3,27 @@
 import os
 import sys
 
+from config.settings.base import *  # noqa: F401, F403
+
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+    if os.environ.get("PRODUCTION"):
+        os.environ.setdefault(
+            "DJANGO_SETTINGS_MODULE",
+            "config.settings.ci",
+        )
+    elif os.environ.get("GITHUB_WORKFLOW"):
+        os.environ.setdefault(
+            "DJANGO_SETTINGS_MODULE",
+            "config.settings.ci",
+        )
+    else:
+        os.environ.setdefault(
+            "DJANGO_SETTINGS_MODULE",
+            "config.settings.local",
+        )
+
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
