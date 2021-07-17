@@ -5,7 +5,6 @@ from django.contrib.auth.models import (  # isort:skip
 )
 from django.db import models
 from django.db.models.signals import post_save
-from django.utils import timezone
 from model_utils.models import TimeStampedModel
 from PIL import Image
 
@@ -21,6 +20,7 @@ class Sector(models.Model):
     ]
 
     entitled = models.CharField(
+        "intitulé",
         max_length=(5),
         unique=True,
         blank=True,
@@ -33,19 +33,23 @@ class Sector(models.Model):
 
 class Location(TimeStampedModel):
     address_1 = models.CharField(
+        "adresse",
         max_length=250,
         blank=True,
     )
     address_2 = models.CharField(
+        "complément d'adresse",
         max_length=250,
         blank=True,
     )
 
     city = models.CharField(
+        "ville",
         max_length=50,
         blank=True,
     )
     zip_code = models.CharField(
+        "code postale",
         max_length=5,
         blank=True,
     )
@@ -106,13 +110,21 @@ class MyUserManager(BaseUserManager):
 class CustomUser(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
 
     email = models.EmailField(
-        verbose_name="email address",
+        "email",
         unique=True,
         max_length=255,
     )
 
-    first_name = models.CharField(max_length=50, blank=False)
-    last_name = models.CharField(max_length=50, blank=False)
+    first_name = models.CharField(
+        "prénom",
+        max_length=50,
+        blank=False,
+    )
+    last_name = models.CharField(
+        "nom",
+        max_length=50,
+        blank=False,
+    )
 
     STATUS_CHOICES = [
         ("BENEVOLE", "Un bénévole"),
@@ -120,13 +132,20 @@ class CustomUser(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
     ]
 
     status = models.CharField(
+        "type de compte",
         max_length=25,
         choices=STATUS_CHOICES,
         blank=False,
     )
 
-    is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
+    is_active = models.BooleanField(
+        "actif",
+        default=True,
+    )
+    is_admin = models.BooleanField(
+        "administrateur",
+        default=False,
+    )
 
     objects = MyUserManager()
 
@@ -163,7 +182,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
         super().save(*args, **kwargs)
 
 
-class Profil(TimeStampedModel):
+class Profile(TimeStampedModel):
 
     user = models.OneToOneField(
         "users.CustomUser",
@@ -175,10 +194,12 @@ class Profil(TimeStampedModel):
         null=True,
     )
     description = models.TextField(
+        "bio",
         max_length=500,
         blank=True,
     )
     web_site_url = models.URLField(
+        "site",
         blank=True,
     )
 
@@ -186,35 +207,39 @@ class Profil(TimeStampedModel):
         abstract = True
 
 
-class OrganizationProfile(Profil):
+class OrganizationProfile(Profile):
 
     sector = models.ForeignKey(
         "users.Sector",
         on_delete=models.SET_NULL,
         null=True,
-        related_name="sector",
-        related_query_name="sector",
+        related_name="organizationprofiles",
     )
     denomination = models.CharField(
         max_length=50,
         blank=True,
     )
     rna_code = models.CharField(
+        "code RNA",
         max_length=10,
         blank=True,
     )
     siret_code = models.CharField(
+        "code SIRET",
         max_length=14,
         blank=True,
     )
     email = models.EmailField(
+        "email",
         blank=True,
     )
     phone_number = models.CharField(
+        "téléphone",
         max_length=10,
         blank=True,
     )
     logo = models.ImageField(
+        "logo",
         default="default.jpg",
         upload_to="organization",
     )
@@ -264,10 +289,19 @@ class Availability(TimeStampedModel):
             "Chaque trimestre",
         ),
     ]
-    start_date = models.DateField()
-    end_date = models.DateField(blank=True, null=True)
-    hour_per_session = models.PositiveSmallIntegerField()
+    start_date = models.DateField(
+        "date de début",
+    )
+    end_date = models.DateField(
+        "date de fin",
+        blank=True,
+        null=True,
+    )
+    hour_per_session = models.PositiveSmallIntegerField(
+        "nombre d'heures par session",
+    )
     type = models.CharField(
+        "récurrence",
         max_length=(50),
         choices=AVAILABILITY_CHOICES,
     )
@@ -276,24 +310,30 @@ class Availability(TimeStampedModel):
         return f"{self.id}: {self.type}, {self.hour_per_session}h"
 
 
-class CandidateProfile(Profil):
+class CandidateProfile(Profile):
 
-    activity = models.ManyToManyField(
+    activities = models.ManyToManyField(
         "candidate.Activity",
+        related_name="candidates_as_activity",
     )
-    availability = models.ManyToManyField(
+    availabilities = models.ManyToManyField(
         "users.Availability",
+        related_name="candidates_as_availability",
     )
     linkedin_url = models.URLField(
+        "Linkedin",
         blank=True,
     )
     github_url = models.URLField(
+        "GitHub",
         blank=True,
     )
     gitlab_url = models.URLField(
+        "GitLab",
         blank=True,
     )
     avatar = models.ImageField(
+        "avatar",
         default="default.jpg",
         upload_to="candidate",
     )
@@ -336,15 +376,20 @@ class Wish(TimeStampedModel):
         "users.CandidateProfile",
         on_delete=models.CASCADE,
     )
-    created_on = models.DateTimeField(default=timezone.now)
-    last_updated = models.DateTimeField(auto_now=True)
-    remote = models.BooleanField(default=False)
+    remote = models.BooleanField(
+        "à distance",
+        default=False,
+    )
     scoop = models.CharField(
+        "zone de déplacement",
         max_length=(20),
         blank=True,
         choices=MOVE_CHOICES,
     )
-    sector = models.ManyToManyField("users.Sector")
+    sectors = models.ManyToManyField(
+        "users.Sector",
+        related_name="wishes_as_sector",
+    )
 
     def __str__(self):
         return f"{self.candidate}: {self.remote}, {self.scoop}, {self.sector}"

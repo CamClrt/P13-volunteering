@@ -16,11 +16,11 @@ class Dashboard(TemplateView):
     def get_context_data(self, request, **kwargs):
         context = super().get_context_data(**kwargs)
         user = request.user.candidateprofile
-        context["activities"] = user.activity.all()
-        context["availabilities"] = user.availability.all()
+        context["activities"] = user.activities.all()
+        context["availabilities"] = user.availabilities.all()
         if Wish.objects.filter(candidate=user.id):
             context["wish"] = user.wish
-            context["sectors"] = [sector for sector in user.wish.sector.all()]
+            context["sectors"] = [sector for sector in user.wish.sectors.all()]
         return context
 
     def get(self, request, *args, **kwargs):
@@ -37,18 +37,18 @@ class DisplayActivity(FormView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         data = {}
-        data["name"] = request.user.candidateprofile.activity.all()
+        data["name"] = request.user.candidateprofile.activities.all()
         context["form"] = ActivityForm(initial=data)
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
         if form.is_valid():
-            request.user.candidateprofile.activity.set(
+            request.user.candidateprofile.activities.set(
                 form.cleaned_data.get("name"),
             )
         else:
-            request.user.candidateprofile.activity.clear()
+            request.user.candidateprofile.activities.clear()
         return self.form_valid(form)
 
 
@@ -62,7 +62,7 @@ class DisplayAvailability(FormView):
         context = super().get_context_data(**kwargs)
         context[
             "availabilities"
-        ] = request.user.candidateprofile.availability.all()  # noqa: E501
+        ] = request.user.candidateprofile.availabilities.all()  # noqa: E501
         return context
 
     def get(self, request, *args, **kwargs):
@@ -79,7 +79,7 @@ class DisplayAvailability(FormView):
                 start_date=data["start_date"],
                 end_date=data["end_date"],
             )
-            request.user.candidateprofile.availability.add(availability)
+            request.user.candidateprofile.availabilities.add(availability)
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
@@ -89,7 +89,7 @@ class DisplayAvailability(FormView):
 class RemoveAvailability(View):
     def get(self, request, availability_id, *args, **kwargs):
         availability = Availability.objects.get(pk=availability_id)
-        request.user.candidateprofile.availability.remove(availability)
+        request.user.candidateprofile.availabilities.remove(availability)
         return redirect("candidate:availability")
 
 
@@ -106,7 +106,7 @@ class DisplayAndUpdateWish(FormView):
             initial["remote"] = user.wish.remote
             initial["scoop"] = user.wish.scoop
             initial["sector"] = [
-                sector.entitled for sector in user.wish.sector.all()
+                sector.entitled for sector in user.wish.sectors.all()
             ]  # noqa: E501
         return initial
 
@@ -127,7 +127,7 @@ class DisplayAndUpdateWish(FormView):
                     candidate=candidate,
                 )
 
-            candidate.wish.sector.set(
+            candidate.wish.sectors.set(
                 [
                     Sector.objects.get(
                         entitled=sector,
