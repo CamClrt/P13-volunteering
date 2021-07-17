@@ -49,10 +49,14 @@ class TestActivityView(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_post_activity_ok(self):
-        [
-            Activity.objects.create(name=activity[0])
-            for activity in Activity.ACTIVITY_CHOICES
-        ]
+        Activity.objects.bulk_create(
+            [
+                Activity(name="autres"),
+                Activity(name="base-de-donnees"),
+                Activity(name="developpement-back-end"),
+                Activity(name="developpement-front-end"),
+            ]
+        )
         self.client.force_login(self.user)
         data = {"name": [1, 2, 3, 4]}
         response = self.client.post(reverse("candidate:activity"), data)

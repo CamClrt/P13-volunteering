@@ -2,55 +2,31 @@ from django.db import models
 
 
 class Activity(models.Model):
-    ACTIVITY_CHOICES = [
-        (
-            "autres",
-            "Autres",
-        ),
-        ("base-de-donnees", "Base de données"),
-        ("developpement-back-end", "Développement Back-end"),
-        ("developpement-front-end", "Développement Front-end"),
-        ("developpement-full-stack", "Développement Full-Stack"),
-        ("gestion-de-projet", "Gestion de projet"),
-        (
+    class CandidateActivity(models.TextChoices):
+        OTHER = "autres", "Autres"
+        BDD = "base-de-donnees", "Base de données"
+        BACK = "developpement-back-end", "Développement Back-end"
+        FRONT = "developpement-front-end", "Développement Front-end"
+        FULL = "developpement-full-stack", "Développement Full-Stack"
+        PROJECT = "gestion-de-projet", "Gestion de projet"
+        SOCIAL = (
             "gestion-de-site-reseaux-sociaux",
             "Gestion de site & réseaux sociaux",
-        ),
-        (
-            "marketing",
-            "Marketing",
-        ),
-        (
-            "produit",
-            "Produit",
-        ),
-        (
-            "pedagogie-formation",
-            "Pédagogie & formation",
-        ),
-        (
-            "seosea",
-            "SEO/SEA",
-        ),
-        (
-            "support",
-            "Support",
-        ),
-        (
-            "systeme",
-            "Système",
-        ),
-    ]
+        )  # noqa: E501
+        MARKETING = "marketing", "Marketing"
+        PRODUCT = "produit", "Produit"
+        LEARNING = "pedagogie-formation", "Pédagogie & formation"
+        ADS = "seo-sea", "SEO/SEA"
+        SUPPORT = "support", "Support"
+        SYSTEME = "systeme", "Système"
 
     name = models.CharField(
         verbose_name="compétences",
         max_length=(50),
         unique=True,
         blank=True,
-        choices=ACTIVITY_CHOICES,
+        choices=CandidateActivity.choices,
     )
 
     def __str__(self):
-        for activity in self.ACTIVITY_CHOICES:
-            if activity[0] == self.name:
-                return activity[1]
+        return self.name
