@@ -37,6 +37,10 @@ urlpatterns = [
         "candidate/",
         include("candidate.urls"),
     ),
+    path(
+        "organization/",
+        include("organization.urls"),
+    ),
 ]
 
 if settings.DEBUG:
