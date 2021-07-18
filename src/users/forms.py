@@ -18,6 +18,7 @@ class UserRegistrationForm(UserCreationForm):
         fields = [
             "status",
             "email",
+            "username",
             "first_name",
             "last_name",
             "password1",
@@ -26,10 +27,14 @@ class UserRegistrationForm(UserCreationForm):
         labels = {
             "status": "Vous êtes",
             "email": "Email",
+            "username": "Nom d'utilisateur",
             "first_name": "Prénom",
             "last_name": "Nom",
             "password1": "Mot de passe",
             "password2": "Confirmation du mot de passe",
+        }
+        help_text = {
+            "username": "",
         }
 
 
