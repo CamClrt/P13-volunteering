@@ -13,6 +13,7 @@ class TestRegisterView(TestCase):
     def test_registration_ok(self):
         data = {
             "status": "BENEVOLE",
+            "username": "JD",
             "first_name": "John",
             "last_name": "Doe",
             "email": "john.doe@gmail.com",
@@ -42,6 +43,7 @@ class TestProfileView(TestCase):
     def setUp(self):
         Sector.objects.create(entitled="A")
         CustomUser.objects.create_user(
+            username="inconnu1",
             email="inconnu1@mail.com",
             first_name="inconnu",
             last_name="1",
@@ -49,6 +51,7 @@ class TestProfileView(TestCase):
             status="BENEVOLE",
         )
         CustomUser.objects.create_user(
+            username="inconnu2",
             email="inconnu2@mail.com",
             first_name="inconnu",
             last_name="2",
@@ -58,6 +61,7 @@ class TestProfileView(TestCase):
 
     def test_display_and_update_candidate_profile_ok(self):
         self.client.login(
+            username="inconnu1",
             email="inconnu1@mail.com",
             password="1234AZERTY",
         )
@@ -107,6 +111,7 @@ class TestProfileView(TestCase):
 
     def test_display_and_update_organization_profile_ok(self):
         self.client.login(
+            username="inconnu2",
             email="inconnu2@mail.com",
             password="1234AZERTY",
         )

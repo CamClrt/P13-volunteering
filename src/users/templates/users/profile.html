@@ -8,9 +8,10 @@
     {% csrf_token %}
     <div class="row text-center">
         <div class="col-lg-12 col-md-12">
-            <div class="media-body">
+            <div class="media-body mb-4">
                 <h2 class="account-heading">{{ user.first_name }} {{ user.last_name }}</h2>
-                <h6>Identifiant: {{ user.email }}</h6>
+                <h5>Identifiant: {{ user.username }}</h5>
+                <h6>Mail: {{ user.email }}</h6>
             </div>
             <div class="media">
                 <!-- Organization part -->

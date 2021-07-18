@@ -1,8 +1,4 @@
-from django.contrib.auth.models import (  # isort:skip
-    AbstractBaseUser,
-    BaseUserManager,
-    PermissionsMixin,
-)
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models.signals import post_save
 from model_utils.models import TimeStampedModel
@@ -61,119 +57,30 @@ class Location(TimeStampedModel):
         super().save(*args, **kwargs)
 
 
-class MyUserManager(BaseUserManager):
-    def create_user(self, email, first_name, last_name, status, password=None):
-        """
-        Creates and saves a User with the given email,
-        first_name, last_name and password.
-        """
-        if not email:
-            raise ValueError("Users must have an email address")
-
-        user = self.model(
-            email=self.normalize_email(email),
-            first_name=first_name,
-            last_name=last_name,
-            status=status,
-        )
-
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(
-        self,
-        email,
-        first_name,
-        last_name,
-        status,
-        password=None,
-    ):
-        """
-        Creates and saves a superuser with the given email, date of
-        birth and password.
-        """
-        user = self.model(
-            email=self.normalize_email(email),
-            first_name=first_name,
-            last_name=last_name,
-            status=status,
-        )
-
-        user.set_password(password)
-        user.is_admin = True
-        user.save(using=self._db)
-        return user
-
-
-class CustomUser(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
+class CustomUser(AbstractUser):
     class UserStatus(models.TextChoices):
         BENEVOLE = "BENEVOLE", "Un bénévole"
         ASSOCIATION = "ASSOCIATION", "Une association"
 
     status = models.CharField(
         "type de compte",
-        max_length=25,
+        max_length=15,
         choices=UserStatus.choices,
         blank=False,
     )
 
-    email = models.EmailField(
-        "email",
-        unique=True,
-        max_length=255,
-    )
-
-    first_name = models.CharField(
-        "prénom",
-        max_length=50,
-        blank=False,
-    )
-    last_name = models.CharField(
-        "nom",
-        max_length=50,
-        blank=False,
-    )
-
-    is_active = models.BooleanField(
-        "actif",
-        default=True,
-    )
-    is_admin = models.BooleanField(
-        "administrateur",
-        default=False,
-    )
-
-    objects = MyUserManager()
-
-    USERNAME_FIELD = "email"
-
     REQUIRED_FIELDS = [
         "first_name",
         "last_name",
+        "email",
         "status",
     ]
 
     def __str__(self):
-        return self.email
-
-    def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
-        # Simplest possible answer: Yes, always
-        return True
-
-    def has_module_perms(self, app_label):
-        "Does the user have permissions to view the app `app_label`?"
-        # Simplest possible answer: Yes, always
-        return True
-
-    @property
-    def is_staff(self):
-        "Is the user a member of staff?"
-        # Simplest possible answer: All admins are staff
-        return self.is_admin
+        return f"{self.username}, {self.email}"
 
     def save(self, *args, **kwargs):
+        self.username = self.username.lower()
         self.first_name = self.first_name.capitalize()
         self.last_name = self.last_name.upper()
         super().save(*args, **kwargs)

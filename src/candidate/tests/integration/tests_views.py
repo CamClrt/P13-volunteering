@@ -10,6 +10,7 @@ from users.models import Availability, CustomUser, Sector
 class TestDashboardView(TestCase):
     def setUp(self):
         self.user = CustomUser.objects.create_user(
+            username="inconnu",
             email="inconnu@mail.com",
             password="1234AZERTY",
             first_name="John",
@@ -31,6 +32,7 @@ class TestDashboardView(TestCase):
 class TestActivityView(TestCase):
     def setUp(self):
         self.user = CustomUser.objects.create_user(
+            username="inconnu",
             email="inconnu@mail.com",
             password="1234AZERTY",
             first_name="John",
@@ -72,6 +74,7 @@ class TestActivityView(TestCase):
 class TestAvailabilityView(TestCase):
     def setUp(self):
         self.user = CustomUser.objects.create_user(
+            username="inconnu",
             email="inconnu@mail.com",
             password="1234AZERTY",
             first_name="John",
@@ -127,6 +130,7 @@ class TestWishView(TestCase):
     def setUp(self):
         Sector.objects.create(entitled="A")
         self.user = CustomUser.objects.create_user(
+            username="inconnu",
             email="inconnu@mail.com",
             password="1234AZERTY",
             first_name="John",
