@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "home.apps.HomeConfig",
     "candidate.apps.CandidateConfig",
+    "organization.apps.OrganizationConfig",
     "crispy_forms",
     "crispy_bootstrap5",
     "django.contrib.admin",
