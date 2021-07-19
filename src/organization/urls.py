@@ -11,7 +11,7 @@ urlpatterns = [
         name="dashboard",
     ),
     path(
-        "details/<int:candidate_id>/",
+        "details/<int:pk>/",
         CandidateDetail.as_view(),
         name="details",
     ),
