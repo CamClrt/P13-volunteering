@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% for candidate in candidates %}
+{{ candidate.id }}
+{% endfor %}
+{% endblock content %}
