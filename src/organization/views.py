@@ -1,15 +1,16 @@
 from django.views.generic import DetailView, ListView
 
-from users.models import CandidateProfile
+from users.models import CustomUser
 
 
 class Dashboard(ListView):
-    model = CandidateProfile
+    queryset = CustomUser.objects.filter(status="BENEVOLE")
     template_name = "organization/dashboard.html"
-    context_object_name = "candidates"
+    context_object_name = "users"
+    paginate_by = 10
 
 
 class CandidateDetail(DetailView):
-    model = CandidateProfile
+    queryset = CustomUser.objects.filter(status="BENEVOLE")
     template_name = "organization/details.html"
-    context_object_name = "candidate"
+    context_object_name = "user"

@@ -66,9 +66,9 @@ class Command(BaseCommand):
         # generate candidates profile
         [
             CandidateProfileFactory(
-                linkedin_url=fake.url("://linkedin.com"),
-                github_url=fake.url("://github.com"),
-                gitlab_url=fake.url("://gitlab.com"),
+                linkedin_url=fake.url(),
+                github_url=fake.url(),
+                gitlab_url=fake.url(),
                 description=fake.sentence(25),
                 web_site_url=fake.url(),
                 activities=[
