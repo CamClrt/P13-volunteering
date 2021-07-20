@@ -1,5 +1,6 @@
 import os
 
+import dj_database_url
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
@@ -7,6 +8,35 @@ from .base import *  # noqa: F401, F403
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+DATABASES["default"] = dj_database_url.config(  # noqa: F405
+    conn_max_age=600,
+    ssl_require=True,
+)
+
+ALLOWED_HOSTS = [
+    "p13-volunteering.herokuapp.com",
+]
+
+MIDDLEWARE = [
+    # Simplified static file serving.
+    # https://warehouse.python.org/project/whitenoise/
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 sentry_sdk.init(
     dsn=os.environ.get("SENTRY"),
