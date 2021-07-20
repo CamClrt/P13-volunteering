@@ -1,39 +1,45 @@
 name: Continious Integration
 
-on: [push]
+on: push
 
 jobs:
-  build:
+  # Label of the runner job
+  runner-job:
+    # You must use a Linux environment when using service containers or container jobs
     runs-on: ubuntu-latest
 
+    # Service containers to run with `runner-job`
     services:
+      # Label used to access the service container
       postgres:
-        image: postgres:10.8
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
         env:
-          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: github_actions
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         ports:
+          # Maps tcp port 5432 on service container to the host
           - 5432:5432
-        # needed because the postgres container does not provide a healthcheck
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Set up Python 3.9
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2
         with:
-          python-version: 3.9
-      - name: psycopg2 prerequisites
-        run: sudo apt-get install libpq-dev
+          # Semantic version range syntax or exact version of a Python version
+          python-version: "3.9"
+
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest-django
+        run: python -m pip install --upgrade pip && pip install -r requirements.txt
 
       - name: Run Django tests
-        run: coverage run --source='src' src/manage.py test home users candidate
+        run: coverage run --source='src' src/manage.py test home users candidate organization
 
       - name: Coverage report
         run: coverage report
