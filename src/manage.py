@@ -11,7 +11,7 @@ def main():
     if os.environ.get("PRODUCTION"):
         os.environ.setdefault(
             "DJANGO_SETTINGS_MODULE",
-            "config.settings.ci",
+            "config.settings.production",
         )
     elif os.environ.get("GITHUB_WORKFLOW"):
         os.environ.setdefault(
