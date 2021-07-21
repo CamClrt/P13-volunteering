@@ -92,7 +92,6 @@ class CustomUser(AbstractUser):
         return f"{self.username}, {self.email}"
 
     def save(self, *args, **kwargs):
-        self.username = self.username.lower()
         self.first_name = self.first_name.capitalize()
         self.last_name = self.last_name.upper()
         super().save(*args, **kwargs)
