@@ -42,7 +42,7 @@ jobs:
         run: coverage run --source='src' src/manage.py test home users candidate organization
 
       - name: Coverage report
-        run: coverage report
+        run: coverage report && coverage json
 
       - name: Coveralls GitHub Action
         uses: coverallsapp/github-action@1.1.3
