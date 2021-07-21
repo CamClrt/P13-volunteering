@@ -11,6 +11,11 @@ from users.models import Availability, Sector, Wish
 
 @method_decorator(login_required, name="dispatch")
 class Dashboard(TemplateView):
+    """Display template based on `users.CustomUser` instance
+    Args:
+        TemplateView (class): Render details of `users.CustomUser` instance
+    """
+
     template_name = "candidate/dashboard.html"
 
     def get_context_data(self, request, **kwargs):
@@ -30,6 +35,11 @@ class Dashboard(TemplateView):
 
 @method_decorator(login_required, name="dispatch")
 class DisplayActivity(FormView):
+    """Display template and form to read user's activities or update them
+    Args:
+        FormView (class): Render ActivityForm instance
+    """
+
     template_name = "candidate/activity.html"
     form_class = ActivityForm
     success_url = reverse_lazy("candidate:dashboard")
@@ -54,6 +64,11 @@ class DisplayActivity(FormView):
 
 @method_decorator(login_required, name="dispatch")
 class DisplayAvailability(FormView):
+    """Display template and form to read user's availabilities or update them
+    Args:
+        FormView (class): Render AvailabilityForm instance
+    """
+
     template_name = "candidate/availability.html"
     form_class = AvailabilityForm
     success_url = reverse_lazy("candidate:availability")
@@ -87,6 +102,11 @@ class DisplayAvailability(FormView):
 
 @method_decorator(login_required, name="dispatch")
 class RemoveAvailability(View):
+    """Remove one of the user's availabilities
+    Args:
+        View (class): Redirect to availability url
+    """
+
     def get(self, request, availability_id, *args, **kwargs):
         availability = Availability.objects.get(pk=availability_id)
         request.user.candidateprofile.availabilities.remove(availability)
@@ -95,6 +115,11 @@ class RemoveAvailability(View):
 
 @method_decorator(login_required, name="dispatch")
 class DisplayAndUpdateWish(FormView):
+    """Display template and form to read user's wish or update it
+    Args:
+        FormView (class): Render WishForm instance
+    """
+
     template_name = "candidate/wish.html"
     form_class = WishForm
     success_url = reverse_lazy("candidate:dashboard")

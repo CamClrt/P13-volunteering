@@ -1,4 +1,4 @@
-"""Feed DB with command line"""
+"""Feed database with fake data in commande line"""
 
 import datetime
 import random

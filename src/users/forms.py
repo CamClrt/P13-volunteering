@@ -12,6 +12,10 @@ from .models import (  # isort:skip
 
 
 class UserRegistrationForm(UserCreationForm):
+    """
+    Form to register user
+    """
+
     class Meta:
 
         model = CustomUser
@@ -39,6 +43,10 @@ class UserRegistrationForm(UserCreationForm):
 
 
 class UserForm(forms.ModelForm):
+    """
+    Form to display and update some info about user
+    """
+
     class Meta:
         model = CustomUser
         fields = [
@@ -52,6 +60,10 @@ class UserForm(forms.ModelForm):
 
 
 class CandidateProfileForm(forms.ModelForm):
+    """
+    Form to display and update some info about candidate
+    """
+
     class Meta:
         model = CandidateProfile
         fields = [
@@ -99,6 +111,10 @@ class CandidateProfileForm(forms.ModelForm):
 
 
 class OrganizationProfileForm(forms.ModelForm):
+    """
+    Form to display and update some info about organization
+    """
+
     class Meta:
         model = OrganizationProfile
         fields = [
@@ -138,6 +154,10 @@ class OrganizationProfileForm(forms.ModelForm):
 
 
 class LocationForm(forms.ModelForm):
+    """
+    Form to display and update some info about user's location
+    """
+
     class Meta:
         model = Location
         fields = [
@@ -155,6 +175,10 @@ class LocationForm(forms.ModelForm):
 
 
 class SectorForm(forms.ModelForm):
+    """
+    Form to display and update some info about organization's sector
+    """
+
     class Meta:
         model = Sector
         fields = [

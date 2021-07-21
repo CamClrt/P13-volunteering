@@ -2,6 +2,10 @@ from django.db import models
 
 
 class Activity(models.Model):
+    """
+    Model for an activity related to CandidateProfile
+    """
+
     class CandidateActivity(models.TextChoices):
         OTHER = "autres", "Autres"
         BDD = "base-de-donnees", "Base de données"
