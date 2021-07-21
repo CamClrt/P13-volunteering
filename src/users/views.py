@@ -15,7 +15,13 @@ from .forms import (  # isort:skip
 
 
 def register(request):
-    """Register user"""
+    """Display template and form to create `users.CustomUser` instance
+
+    Returns:
+        HttpRequest (class): display `users/register` template
+        and `UserRegistrationForm` instance
+    """
+
     if request.method == "POST":
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
@@ -29,7 +35,18 @@ def register(request):
 
 @login_required
 def profile(request):
-    """Display or update data for user as candidate or organization"""
+    """Display template and form to read user data or update them from
+    `users.CandidateProfile` instance or `users.OrganizationProfile` instance
+
+    Returns:
+        HttpResponseRedirect (class): HttpResponse subclasses
+        to redirect user when the profile update is a success
+
+        or
+
+        HttpRequest (class): render() combines a given template with
+        a given context dictionary and returns an HttpResponse object
+    """
     user = request.user
 
     if request.method == "POST":

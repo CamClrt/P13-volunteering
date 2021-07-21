@@ -9,6 +9,10 @@ today = date.today()
 
 
 class ActivityForm(forms.Form):
+    """
+    Form to display and update candidate's activities
+    """
+
     name = forms.ModelMultipleChoiceField(
         queryset=Activity.objects.all(),
         label="",
@@ -17,6 +21,10 @@ class ActivityForm(forms.Form):
 
 
 class AvailabilityForm(forms.ModelForm):
+    """
+    Form to display and update candidate's availabilities
+    """
+
     class Meta:
         model = Availability
         fields = [
@@ -90,6 +98,10 @@ class AvailabilityForm(forms.ModelForm):
 
 
 class WishForm(forms.ModelForm):
+    """
+    Form to display and update candidate's wish
+    """
+
     sector = forms.MultipleChoiceField(
         choices=Sector.OrganizationSector.choices,
         label="Secteur(s) d'activité (1 choix min)",

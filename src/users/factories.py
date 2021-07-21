@@ -1,4 +1,4 @@
-"""Feed DB with command line"""
+"""Feed database with fake data"""
 
 import factory
 from django.db.models import signals

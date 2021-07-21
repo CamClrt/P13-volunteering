@@ -1,4 +1,4 @@
-"""Feed DB with command line"""
+"""Feed database with pre determined sectors"""
 
 import logging
 

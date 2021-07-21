@@ -6,6 +6,10 @@ from PIL import Image
 
 
 class Sector(models.Model):
+    """
+    Model for a sector, related to OrganizationProfile and Wish
+    """
+
     class OrganizationSector(models.TextChoices):
         ASH = "ASH", "Action sociale, Santé, Humanitaire"
         CL = "CL", "Culture et loisirs"
@@ -27,6 +31,10 @@ class Sector(models.Model):
 
 
 class Location(TimeStampedModel):
+    """
+    Model for a location, related to Profile (abstract class)
+    """
+
     address_1 = models.CharField(
         "adresse",
         max_length=250,
@@ -58,6 +66,10 @@ class Location(TimeStampedModel):
 
 
 class CustomUser(AbstractUser):
+    """
+    Custom model for an user, related to Profile (abstract class)
+    """
+
     class UserStatus(models.TextChoices):
         BENEVOLE = "BENEVOLE", "Un bénévole"
         ASSOCIATION = "ASSOCIATION", "Une association"
@@ -87,6 +99,9 @@ class CustomUser(AbstractUser):
 
 
 class Profile(TimeStampedModel):
+    """
+    Model for a profil, related to OrganizationProfile and CandidateProfile
+    """
 
     user = models.OneToOneField(
         "users.CustomUser",
@@ -112,6 +127,9 @@ class Profile(TimeStampedModel):
 
 
 class OrganizationProfile(Profile):
+    """
+    Model for an organization profile related to Sector
+    """
 
     sector = models.ForeignKey(
         "users.Sector",
@@ -163,6 +181,10 @@ class OrganizationProfile(Profile):
 
 
 class Availability(TimeStampedModel):
+    """
+    Model for a availability, related to CandidateProfile
+    """
+
     class CandidateAvailability(models.TextChoices):
         OPTION_1 = "ponctuel", "Ponctuel"
         OPTION_2 = "journalier", "Chaque jour"
@@ -194,6 +216,9 @@ class Availability(TimeStampedModel):
 
 
 class CandidateProfile(Profile):
+    """
+    Model for a candidate profile related to Activity, Availability and Wish
+    """
 
     activities = models.ManyToManyField(
         "candidate.Activity",
@@ -236,6 +261,10 @@ class CandidateProfile(Profile):
 
 
 class Wish(TimeStampedModel):
+    """
+    Model for a wish, related to CandidateProfile and Sector
+    """
+
     class CandidateWish(models.TextChoices):
         OPTION_1 = "city", "Local"
         OPTION_2 = "department", "Départemental"
@@ -245,6 +274,10 @@ class Wish(TimeStampedModel):
     candidate = models.OneToOneField(
         "users.CandidateProfile",
         on_delete=models.CASCADE,
+    )
+    sectors = models.ManyToManyField(
+        "users.Sector",
+        related_name="wishes_as_sector",
     )
     remote = models.BooleanField(
         "à distance",
@@ -256,17 +289,15 @@ class Wish(TimeStampedModel):
         blank=True,
         choices=CandidateWish.choices,
     )
-    sectors = models.ManyToManyField(
-        "users.Sector",
-        related_name="wishes_as_sector",
-    )
 
     def __str__(self):
         return f"{self.candidate}: {self.remote}, {self.scoop}, {self.sector}"
 
 
 def post_profile_save_receiver(sender, instance, created, **kwargs):
-    """Create a profil and other infos, when user is registered"""
+    """
+    Create a candidate or organization profile when user is registered
+    """
     if created:
         location = Location.objects.create(
             address_1="",
