@@ -1,0 +1,10 @@
+pull_request_rules:
+  - name: Cam's automatic merge
+    conditions:
+      - author=camclrt
+      - check-success=Continious Integration
+      - base=main
+      - label!=work-in-progress
+    actions:
+      merge:
+        method: rebase
