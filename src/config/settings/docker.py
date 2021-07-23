@@ -8,6 +8,8 @@ DEBUG = False
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
+    "188.166.57.233",
+    "dev.la-plateforme-a-caractere-associatif.org/",
 ]
 
 # Database
