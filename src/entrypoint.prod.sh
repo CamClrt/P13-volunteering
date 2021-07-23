@@ -15,7 +15,7 @@ python manage.py flush --no-input
 python manage.py migrate
 python manage.py create_activity
 python manage.py create_sector
-python manage.py migrate --noinput
+python manage.py populate
 python manage.py collectstatic --no-input --clear
 
 exec "$@"
